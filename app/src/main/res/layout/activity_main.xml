@@ -10,14 +10,22 @@
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:id="@+id/screen">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Edge"/>
 
         <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewPagerContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            />
+            android:layout_weight="1">
+
+
+        </androidx.viewpager2.widget.ViewPager2>
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fragmentContainerView"

@@ -5,4 +5,6 @@
     <color name="iconOnClick">#FFE57F</color>
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
+    <color name="dropDown">#2CA7FFEB</color>
+    <color name="transparent">#00000000</color>
 </resources>

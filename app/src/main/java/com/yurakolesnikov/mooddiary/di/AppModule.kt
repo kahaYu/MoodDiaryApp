@@ -2,7 +2,9 @@ package com.yurakolesnikov.mooddiary.di
 
 import android.content.Context
 import android.provider.ContactsContract
+import androidx.databinding.adapters.Converters
 import androidx.room.Room
+import androidx.room.TypeConverters
 import com.yurakolesnikov.mooddiary.database.Dao
 import com.yurakolesnikov.mooddiary.database.NotesDatabase
 import dagger.Module
@@ -14,6 +16,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
+
 object AppModule {
 
     @Singleton

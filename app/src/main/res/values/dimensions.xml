@@ -3,5 +3,6 @@
     <dimen name="icon">24dp</dimen>
     <dimen name="icon_fit">26dp</dimen>
     <dimen name="text_size">10dp</dimen>
+    <dimen name="text_main">17dp</dimen>
 
 </resources>
