@@ -8,46 +8,54 @@ import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
+import androidx.viewpager2.widget.ViewPager2
 import com.yurakolesnikov.mooddiary.R
+import com.yurakolesnikov.mooddiary.adapters.ViewPagerAdapter
+import com.yurakolesnikov.mooddiary.database.model.Note
 import com.yurakolesnikov.mooddiary.databinding.ActivityMainBinding
 import com.yurakolesnikov.mooddiary.sharedViewModels.SharedViewModel
 import com.yurakolesnikov.mooddiary.ui.AddNoteFragment
+import com.yurakolesnikov.mooddiary.ui.PageFragment
 import com.yurakolesnikov.mooddiary.utils.hideSystemUI
+import dagger.hilt.android.AndroidEntryPoint
 
-// Нужно, чтобы навигейшн бар не показывался при нажатии на нижнюю часть экрана.
-// Нужно сделать цвет текста статус бара чёрным. Пока что он белый.
+// При добавлении 7-го элемента, экран не переходит на новый PageFragment.
+
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    private val viewModel: MainActivityViewModel by viewModels()
+    private val vm: MainActivityViewModel by viewModels()
     private val sharedVM: SharedViewModel by viewModels()
 
-    @RequiresApi(Build.VERSION_CODES.M)
+    private lateinit var viewPagerAdapter: ViewPagerAdapter
+    private lateinit var viewPager: ViewPager2
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         var binding = ActivityMainBinding.inflate(layoutInflater, null, false)
-
         setContentView(binding.root)
-        hideSystemUI()
+        hideSystemUI() // Extension that hides system bars.
         supportActionBar?.hide()
 
-        sharedVM.onAddPressed.observe(this, Observer {
-            AddNoteFragment().show(supportFragmentManager, "123")
+        viewPager = binding.viewPagerContainer
+        viewPagerAdapter = ViewPagerAdapter(this,vm.pages)
+        viewPager.adapter = viewPagerAdapter
+
+        vm.deleteAllNotesTrigger.observe(this, Observer {
+            viewPagerAdapter.pageIds = viewPagerAdapter.pages.map { it.hashCode().toLong() }
+            viewPagerAdapter.notifyDataSetChanged()
         })
     }
 
-    override fun onWindowFocusChanged(hasFocus: Boolean) {
-        super.onWindowFocusChanged(hasFocus)
-
+    public fun createPage() {
+        vm.pages.add(PageFragment())
+        viewPagerAdapter.notifyItemInserted(vm.pages.size - 1)
+        viewPager.setCurrentItem(vm.pages.lastIndex, true)
     }
 
-    fun hideUi() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            window.insetsController?.hide(
-                WindowInsets.Type.navigationBars()
-            )
-        }
-    }
 }
 
 

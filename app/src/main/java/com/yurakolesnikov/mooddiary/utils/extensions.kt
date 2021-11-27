@@ -8,6 +8,8 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import com.yurakolesnikov.mooddiary.R
+import java.text.SimpleDateFormat
+import java.util.*
 
 // Rounds double to next integer.
 fun Double.roundToNextInt(): Int {
@@ -94,6 +96,15 @@ fun DialogFragment.hideSystemUI() {
         //@Suppress("DEPRECATION")
         //dialog?.window?.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
     }
+}
+
+fun Date.toString(format: String, locale: Locale = Locale.getDefault()): String {
+    val formatter = SimpleDateFormat(format, locale)
+    return formatter.format(this)
+}
+
+fun getCurrentDateTime(): Date {
+    return Calendar.getInstance().time
 }
 
 

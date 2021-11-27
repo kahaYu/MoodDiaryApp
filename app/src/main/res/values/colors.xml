@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+
     <color name="icon">#80D8FF</color>
     <color name="fab">#31C1FF</color>
     <color name="iconOnClick">#FFE57F</color>
@@ -7,4 +9,6 @@
     <color name="black">#000000</color>
     <color name="dropDown">#2CA7FFEB</color>
     <color name="transparent">#00000000</color>
+    <color name="strokeColor">@color/fab</color>
 </resources>
+

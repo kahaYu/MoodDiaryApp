@@ -11,13 +11,16 @@ import androidx.fragment.app.commit
 import com.yurakolesnikov.mooddiary.R
 import com.yurakolesnikov.mooddiary.databinding.FragmentNavBarBinding
 import com.yurakolesnikov.mooddiary.sharedViewModels.SharedViewModel
+import com.yurakolesnikov.mooddiary.ui.MainActivity.MainActivityViewModel
 import com.yurakolesnikov.mooddiary.utils.AutoClearedValue
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class NavBarFragment : Fragment() {
 
     private var binding by AutoClearedValue<FragmentNavBarBinding>(this)
 
-    private val sharedVM: SharedViewModel by activityViewModels()
+    private val vm: MainActivityViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,11 +46,11 @@ class NavBarFragment : Fragment() {
     }
 
     fun onAddPressed () {
-        sharedVM.onAddPressed()
+        AddNoteFragment().show(parentFragmentManager, "123")
     }
 
     fun onDeleteAllPressed () {
-        // TO DO
+        vm.deleteAllNotes()
     }
 
     fun onSortPressed () {

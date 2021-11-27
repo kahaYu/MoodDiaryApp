@@ -4,6 +4,7 @@
     <string name="sort">Sort</string>
     <string name="filter">Filter</string>
     <string name="rate_your_happiness">Rate your happiness today</string>
+    <string name="apply">Apply</string>
     <string-array name="numbers">
         <item>1</item>
         <item>2</item>

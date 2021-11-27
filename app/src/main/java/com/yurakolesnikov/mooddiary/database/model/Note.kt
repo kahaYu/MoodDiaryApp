@@ -7,10 +7,11 @@ import androidx.room.TypeConverters
 import com.yurakolesnikov.mooddiary.utils.Converters
 
 @Entity
-data class Note(
+class Note(
     @PrimaryKey(autoGenerate = true)
     val id: Int,
-    val image: Bitmap,
     val date: String,
     val mood: Int
-)
+) {
+
+}

@@ -13,7 +13,7 @@
         <item name="android:statusBarColor" tools:targetApi="l">@android:color/transparent</item>
         <item name="android:windowLightStatusBar" tools:targetApi="23">true</item>
         <item name="android:fitsSystemWindows">false</item>
-        <item name="android:windowBackground">@color/iconOnClick</item>
+        <item name="android:windowBackground">@color/white</item>
 
         <!-- Customize your theme here. -->
         <!--<item name="android:windowTranslucentStatus">false</item>-->
