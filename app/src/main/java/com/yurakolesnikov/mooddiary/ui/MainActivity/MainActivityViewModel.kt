@@ -15,7 +15,7 @@ class MainActivityViewModel @Inject constructor(
     private val dao: Dao
 ) : ViewModel() {
 
-    val pages = mutableListOf(PageFragment())
+    val pages = mutableListOf<PageFragment>()
 
     fun insertNote(note: Note) {
         viewModelScope.launch { dao.insertNote(note) }
@@ -33,7 +33,7 @@ class MainActivityViewModel @Inject constructor(
     fun deleteAllNotes() {
         viewModelScope.launch { dao.deleteAllNotes() }
         pages.clear()
-        pages.add(PageFragment())
+
         insertNoteTrigger = MutableLiveData<Note>()
         deleteAllNotesTrigger.value = true
 

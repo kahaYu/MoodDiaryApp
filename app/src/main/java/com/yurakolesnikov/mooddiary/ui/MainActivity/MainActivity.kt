@@ -21,7 +21,8 @@ import com.yurakolesnikov.mooddiary.ui.PageFragment
 import com.yurakolesnikov.mooddiary.utils.hideSystemUI
 import dagger.hilt.android.AndroidEntryPoint
 
-// При добавлении 7-го элемента, экран не переходит на новый PageFragment.
+// Всё переделать. Во-первых нужно изменить лайвдату на флоу. Во вторых понять, откуда удобнее
+// надувать вьюхи и создавать страницы.
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -44,14 +45,17 @@ class MainActivity : AppCompatActivity() {
         viewPagerAdapter = ViewPagerAdapter(this,vm.pages)
         viewPager.adapter = viewPagerAdapter
 
+        vm.pages.add(PageFragment(this))
+
         vm.deleteAllNotesTrigger.observe(this, Observer {
+            vm.pages.add(PageFragment(this))
             viewPagerAdapter.pageIds = viewPagerAdapter.pages.map { it.hashCode().toLong() }
             viewPagerAdapter.notifyDataSetChanged()
         })
     }
 
     public fun createPage() {
-        vm.pages.add(PageFragment())
+        vm.pages.add(PageFragment(this))
         viewPagerAdapter.notifyItemInserted(vm.pages.size - 1)
         viewPager.setCurrentItem(vm.pages.lastIndex, true)
     }

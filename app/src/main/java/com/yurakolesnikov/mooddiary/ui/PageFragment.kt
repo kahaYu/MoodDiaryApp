@@ -1,14 +1,11 @@
 package com.yurakolesnikov.mooddiary.ui
 
 import android.annotation.SuppressLint
-import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -22,13 +19,13 @@ import com.yurakolesnikov.mooddiary.utils.AutoClearedValue
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class PageFragment : Fragment() {
+class PageFragment(mainActivity: MainActivity) : Fragment() {
 
     private var binding by AutoClearedValue<FragmentPageBinding>(this)
 
     private val vm: MainActivityViewModel by activityViewModels()
 
-    val hostActivity = activity as MainActivity?
+    val hostActivity = mainActivity
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -72,16 +69,21 @@ class PageFragment : Fragment() {
 
         if (binding.item1.childCount == 0) {
             binding.item1.addView(view)
-        } else if (binding.item2.childCount == 0) {
-            binding.item2.addView(view)
-        } else if (binding.item3.childCount == 0) {
-            binding.item3.addView(view)
-        } else if (binding.item4.childCount == 0) {
-            binding.item4.addView(view)
-        } else if (binding.item5.childCount == 0) {
-            binding.item5.addView(view)
-        } else if (binding.item6.childCount == 0) {
-            binding.item6.addView(view)
+        }
+        //else if (binding.item2.childCount == 0) {
+        //    binding.item2.addView(view)
+        //} else if (binding.item3.childCount == 0) {
+        //    binding.item3.addView(view)
+        //} else if (binding.item4.childCount == 0) {
+        //    binding.item4.addView(view)
+        //} else if (binding.item5.childCount == 0) {
+        //    binding.item5.addView(view)
+        //} else if (binding.item6.childCount == 0) {
+        //    binding.item6.addView(view)
+        //}
+        else {
+            hostActivity.createPage()
+            //inflateView(note)
         }
     }
 }
