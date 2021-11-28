@@ -65,6 +65,12 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
+        // Create page, when current is full.
+        vm.createPageTrigger.observe(this, Observer { note ->
+            val notesToBeInflated = listOf(note)
+            createPage(notesToBeInflated)
+        })
+
         vm.deleteAllNotesTrigger.observe(this, Observer {
             viewPagerAdapter.pageIds = viewPagerAdapter.pages.map { it.hashCode().toLong() }
             viewPagerAdapter.notifyDataSetChanged()

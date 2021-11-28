@@ -42,6 +42,7 @@ class MainActivityViewModel @Inject constructor(
     fun getAllNotes() = dao.getAllNotes()
 
     var insertNoteTrigger = MutableLiveData<Note>()
+    var createPageTrigger = MutableLiveData<Note>()
     var deleteAllNotesTrigger = MutableLiveData<Boolean>()
 
 }

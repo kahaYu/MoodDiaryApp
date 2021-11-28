@@ -8,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import com.yurakolesnikov.mooddiary.R
 import com.yurakolesnikov.mooddiary.database.model.Note
 import com.yurakolesnikov.mooddiary.databinding.FragmentPageBinding
@@ -40,12 +42,16 @@ class PageFragment(private val notesToBeInflated: List<Note>) : Fragment() {
         for (note in notesToBeInflated) {
             inflateNote(note) // Inflating notes needed.
         }
+
+        vm.insertNoteTrigger.observe(viewLifecycleOwner, Observer { note ->
+            inflateNote(note)
+        })
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
     private fun inflateNote(note: Note) {
 
-        val view = LayoutInflater.from(requireContext()).inflate(
+        val view = LayoutInflater.from(vm.pages.last().requireContext()).inflate(
             R.layout.item_view,
             null, false
         )
@@ -76,6 +82,9 @@ class PageFragment(private val notesToBeInflated: List<Note>) : Fragment() {
             binding.item5.addView(view)
         } else if (binding.item6.childCount == 0) {
             binding.item6.addView(view)
+        } else {
+            vm.createPageTrigger.value = note
+            vm.insertNoteTrigger = MutableLiveData<Note>()
         }
     }
 }
