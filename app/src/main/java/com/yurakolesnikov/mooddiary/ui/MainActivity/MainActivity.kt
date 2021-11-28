@@ -38,6 +38,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var viewPagerAdapter: ViewPagerAdapter
     private lateinit var viewPager: ViewPager2
 
+    var isFirstLaunch = true
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         var binding = ActivityMainBinding.inflate(layoutInflater, null, false)
@@ -50,17 +52,15 @@ class MainActivity : AppCompatActivity() {
         viewPager.adapter = viewPagerAdapter
 
         // Prepopulation.
-        var isFirstLaunch = true
         vm.getAllNotes().observe(this, Observer { notes ->
             val numberOfPagesNeeded = (notes.size.toDouble() / 6).roundToNextInt()
-            if (isFirstLaunch && numberOfPagesNeeded > 0) {
-                val notesToBeInflatedChunked = notes.chunked(6)
+            if (isFirstLaunch && numberOfPagesNeeded > 0) { // If pages is 0, no need to create.
+                val notesToBeInflatedChunked = notes.chunked(6) // Divide by 6 items parts.
                 for (page in 1..numberOfPagesNeeded) {
                     val notesToBeInflated = notesToBeInflatedChunked[page - 1]
                     createPage(notesToBeInflated)
                 }
                 isFirstLaunch = false
-                viewPager.setCurrentItem(0)
             }
         })
 
@@ -74,7 +74,7 @@ class MainActivity : AppCompatActivity() {
     private fun createPage(notesToBeInflated: List<Note>) {
         vm.pages.add(PageFragment(notesToBeInflated))
         viewPagerAdapter.notifyItemInserted(vm.pages.size - 1)
-        viewPager.setCurrentItem(vm.pages.lastIndex, true)
+        if (isFirstLaunch) viewPager.setCurrentItem(vm.pages.lastIndex, true)
     }
 
     private fun numberOfPagesNeeded(notesNumber: Int): Int {
