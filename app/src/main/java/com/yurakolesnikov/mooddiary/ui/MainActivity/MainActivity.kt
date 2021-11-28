@@ -1,7 +1,10 @@
 package com.yurakolesnikov.mooddiary.ui.MainActivity
 
+import android.annotation.SuppressLint
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.view.View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
 import androidx.activity.viewModels
@@ -15,10 +18,12 @@ import com.yurakolesnikov.mooddiary.R
 import com.yurakolesnikov.mooddiary.adapters.ViewPagerAdapter
 import com.yurakolesnikov.mooddiary.database.model.Note
 import com.yurakolesnikov.mooddiary.databinding.ActivityMainBinding
+import com.yurakolesnikov.mooddiary.databinding.ItemViewBinding
 import com.yurakolesnikov.mooddiary.sharedViewModels.SharedViewModel
 import com.yurakolesnikov.mooddiary.ui.AddNoteFragment
 import com.yurakolesnikov.mooddiary.ui.PageFragment
 import com.yurakolesnikov.mooddiary.utils.hideSystemUI
+import com.yurakolesnikov.mooddiary.utils.roundToNextInt
 import dagger.hilt.android.AndroidEntryPoint
 
 // Всё переделать. Во-первых нужно изменить лайвдату на флоу. Во вторых понять, откуда удобнее
@@ -33,7 +38,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var viewPagerAdapter: ViewPagerAdapter
     private lateinit var viewPager: ViewPager2
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         var binding = ActivityMainBinding.inflate(layoutInflater, null, false)
@@ -42,22 +46,39 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.hide()
 
         viewPager = binding.viewPagerContainer
-        viewPagerAdapter = ViewPagerAdapter(this,vm.pages)
+        viewPagerAdapter = ViewPagerAdapter(this, vm.pages)
         viewPager.adapter = viewPagerAdapter
 
-        vm.pages.add(PageFragment(this))
+        // Prepopulation.
+        var isFirstLaunch = true
+        vm.getAllNotes().observe(this, Observer { notes ->
+            val numberOfPagesNeeded = (notes.size.toDouble() / 6).roundToNextInt()
+            if (isFirstLaunch && numberOfPagesNeeded > 0) {
+                val notesToBeInflatedChunked = notes.chunked(6)
+                for (page in 1..numberOfPagesNeeded) {
+                    val notesToBeInflated = notesToBeInflatedChunked[page - 1]
+                    createPage(notesToBeInflated)
+                }
+                isFirstLaunch = false
+                viewPager.setCurrentItem(0)
+            }
+        })
 
         vm.deleteAllNotesTrigger.observe(this, Observer {
-            vm.pages.add(PageFragment(this))
+            //vm.pages.add(PageFragment())
             viewPagerAdapter.pageIds = viewPagerAdapter.pages.map { it.hashCode().toLong() }
             viewPagerAdapter.notifyDataSetChanged()
         })
     }
 
-    public fun createPage() {
-        vm.pages.add(PageFragment(this))
+    private fun createPage(notesToBeInflated: List<Note>) {
+        vm.pages.add(PageFragment(notesToBeInflated))
         viewPagerAdapter.notifyItemInserted(vm.pages.size - 1)
         viewPager.setCurrentItem(vm.pages.lastIndex, true)
+    }
+
+    private fun numberOfPagesNeeded(notesNumber: Int): Int {
+        return (notesNumber.toDouble() / 6).roundToNextInt()
     }
 
 }

@@ -7,7 +7,15 @@ import android.view.*
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import com.yurakolesnikov.mooddiary.R
+import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -106,6 +114,7 @@ fun Date.toString(format: String, locale: Locale = Locale.getDefault()): String 
 fun getCurrentDateTime(): Date {
     return Calendar.getInstance().time
 }
+
 
 
 

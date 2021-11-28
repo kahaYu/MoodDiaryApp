@@ -7,6 +7,8 @@ import com.yurakolesnikov.mooddiary.database.Dao
 import com.yurakolesnikov.mooddiary.database.model.Note
 import com.yurakolesnikov.mooddiary.ui.PageFragment
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -43,4 +45,5 @@ class MainActivityViewModel @Inject constructor(
 
     var insertNoteTrigger = MutableLiveData<Note>()
     var deleteAllNotesTrigger = MutableLiveData<Boolean>()
+
 }
