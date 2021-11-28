@@ -3,26 +3,18 @@ package com.yurakolesnikov.mooddiary.ui
 import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import com.yurakolesnikov.mooddiary.R
 import com.yurakolesnikov.mooddiary.database.model.Note
 import com.yurakolesnikov.mooddiary.databinding.FragmentPageBinding
 import com.yurakolesnikov.mooddiary.databinding.ItemViewBinding
-import com.yurakolesnikov.mooddiary.ui.MainActivity.MainActivity
 import com.yurakolesnikov.mooddiary.ui.MainActivity.MainActivityViewModel
 import com.yurakolesnikov.mooddiary.utils.AutoClearedValue
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class PageFragment(private val notesToBeInflated: List<Note>) : Fragment() {
@@ -46,12 +38,12 @@ class PageFragment(private val notesToBeInflated: List<Note>) : Fragment() {
         binding.tvHash.text = this.hashCode().toString()
 
         for (note in notesToBeInflated) {
-            inflateView(note)
+            inflateNote(note) // Inflating notes needed.
         }
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
-    private fun inflateView(note: Note) {
+    private fun inflateNote(note: Note) {
 
         val view = LayoutInflater.from(requireContext()).inflate(
             R.layout.item_view,

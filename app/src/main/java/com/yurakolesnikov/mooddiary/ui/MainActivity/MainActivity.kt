@@ -58,14 +58,14 @@ class MainActivity : AppCompatActivity() {
                 val notesToBeInflatedChunked = notes.chunked(6) // Divide by 6 items parts.
                 for (page in 1..numberOfPagesNeeded) {
                     val notesToBeInflated = notesToBeInflatedChunked[page - 1]
-                    createPage(notesToBeInflated)
+                    createPage(notesToBeInflated) // When page is created it knows what to inflate.
                 }
                 isFirstLaunch = false
+                viewPager.currentItem = 0
             }
         })
 
         vm.deleteAllNotesTrigger.observe(this, Observer {
-            //vm.pages.add(PageFragment())
             viewPagerAdapter.pageIds = viewPagerAdapter.pages.map { it.hashCode().toLong() }
             viewPagerAdapter.notifyDataSetChanged()
         })
@@ -74,7 +74,7 @@ class MainActivity : AppCompatActivity() {
     private fun createPage(notesToBeInflated: List<Note>) {
         vm.pages.add(PageFragment(notesToBeInflated))
         viewPagerAdapter.notifyItemInserted(vm.pages.size - 1)
-        if (isFirstLaunch) viewPager.setCurrentItem(vm.pages.lastIndex, true)
+        viewPager.setCurrentItem(vm.pages.lastIndex, true)
     }
 
     private fun numberOfPagesNeeded(notesNumber: Int): Int {

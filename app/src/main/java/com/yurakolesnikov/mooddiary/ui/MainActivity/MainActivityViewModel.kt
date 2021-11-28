@@ -35,8 +35,6 @@ class MainActivityViewModel @Inject constructor(
     fun deleteAllNotes() {
         viewModelScope.launch { dao.deleteAllNotes() }
         pages.clear()
-
-        insertNoteTrigger = MutableLiveData<Note>()
         deleteAllNotesTrigger.value = true
 
     }
