@@ -96,6 +96,14 @@ class MainActivity : AppCompatActivity() {
     private fun numberOfPagesNeeded(notesNumber: Int): Int {
         return (notesNumber.toDouble() / 6).roundToNextInt()
     }
+
+    override fun onStart() {
+        super.onStart()
+    }
+
+    override fun onResume() {
+        super.onResume()
+    }
 }
 
 
