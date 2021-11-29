@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.MutableLiveData
@@ -53,6 +54,9 @@ class PageFragment(private val notesToBeInflated: List<Note>) : Fragment() {
         )
 
         val viewBinding = ItemViewBinding.bind(view)
+        viewBinding.fragment = this
+        viewBinding.viewId = note.id
+        viewBinding.mood = note.mood
 
         val image: Drawable = when {
             note.mood <= 3 -> resources.getDrawable(R.drawable.emoji_1_3)
@@ -81,6 +85,10 @@ class PageFragment(private val notesToBeInflated: List<Note>) : Fragment() {
         } else {
             vm.createPageTrigger.value = note // Create new page when current is full.
         }
+    }
+
+    fun onItemClick (viewId: Int, mood: Int) {
+        AddNoteFragment("Change your mood", mood).show(parentFragmentManager, "456")
     }
 }
 

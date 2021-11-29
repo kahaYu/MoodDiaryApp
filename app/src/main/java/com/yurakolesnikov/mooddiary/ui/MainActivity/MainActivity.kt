@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.view.View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -95,11 +96,6 @@ class MainActivity : AppCompatActivity() {
     private fun numberOfPagesNeeded(notesNumber: Int): Int {
         return (notesNumber.toDouble() / 6).roundToNextInt()
     }
-
-    override fun onDestroy() {
-        super.onDestroy()
-    }
-
 }
 
 

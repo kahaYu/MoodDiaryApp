@@ -57,7 +57,7 @@
                 android:layout_weight="1"
                 android:inputType="none"
                 android:paddingVertical="0dp"
-                android:text="1" />
+                android:text="1"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 

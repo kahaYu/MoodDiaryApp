@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.text.Editable
 import android.view.*
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.ActionBar
@@ -23,7 +24,10 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 @AndroidEntryPoint
-class AddNoteFragment : DialogFragment() {
+class AddNoteFragment(
+    val text: String = "Rate your happiness today",
+    val initialMood: Int = 1
+) : DialogFragment() {
 
     private var binding by AutoClearedValue<FragmentAddNoteBinding>(this)
 
@@ -47,6 +51,8 @@ class AddNoteFragment : DialogFragment() {
         val numbers = resources.getStringArray(R.array.numbers)
         val arrayAdapter = ArrayAdapter(requireContext(), R.layout.dropdowm_item, numbers)
         binding.autoCompleteTextView.setAdapter(arrayAdapter)
+        binding.tvRateYourHappiness.text = text
+        binding.autoCompleteTextView.setText(initialMood.toString(), false)
         return binding.root
     }
 

@@ -1,15 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
+        <variable
+            name="fragment"
+            type="com.yurakolesnikov.mooddiary.ui.PageFragment" />
+        <variable
+            name="viewId"
+            type="Integer" />
+        <variable
+            name="mood"
+            type="Integer" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="150dp"
-        android:layout_height="150dp">
+        android:layout_height="150dp"
+        android:onClick="@{() -> fragment.onItemClick(viewId, mood)}">
 
         <ImageView
             android:id="@+id/image_view"
@@ -24,46 +33,46 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
+            android:id="@+id/tv_mood"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/image_view"
-            android:id="@+id/tv_mood"
-            app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="35dp"
             android:text="Mood: "
+            android:textSize="20dp"
             android:textStyle="bold"
-            android:textSize="20dp" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/image_view" />
 
         <TextView
+            android:id="@+id/tv_moodRating"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/image_view"
-            android:id="@+id/tv_moodRating"
-            app:layout_constraintStart_toEndOf="@id/tv_mood"
             android:layout_marginStart="5dp"
             android:text="1"
+            android:textSize="20dp"
             android:textStyle="bold"
-            android:textSize="20dp" />
+            app:layout_constraintStart_toEndOf="@id/tv_mood"
+            app:layout_constraintTop_toBottomOf="@+id/image_view" />
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/tv_mood"
             android:id="@+id/tv_date"
-            app:layout_constraintStart_toStartOf="parent"
-            android:text="Date: "
-            android:layout_marginStart="18dp"
-            android:textSize="15dp" />
-
-        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/tv_mood"
+            android:layout_marginStart="18dp"
+            android:text="Date: "
+            android:textSize="15dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_mood" />
+
+        <TextView
             android:id="@+id/tv_currentDate"
-            app:layout_constraintStart_toEndOf="@id/tv_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:text="22.11.2021"
-            android:textSize="15dp" />
+            android:textSize="15dp"
+            app:layout_constraintStart_toEndOf="@id/tv_date"
+            app:layout_constraintTop_toBottomOf="@+id/tv_mood" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
