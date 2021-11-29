@@ -42,16 +42,12 @@ class PageFragment(private val notesToBeInflated: List<Note>) : Fragment() {
         for (note in notesToBeInflated) {
             inflateNote(note) // Inflating notes needed.
         }
-
-        vm.insertNoteTrigger.observe(viewLifecycleOwner, Observer { note ->
-            inflateNote(note)
-        })
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
-    private fun inflateNote(note: Note) {
+    fun inflateNote(note: Note) {
 
-        val view = LayoutInflater.from(vm.pages.last().requireContext()).inflate(
+        val view = LayoutInflater.from(requireContext()).inflate(
             R.layout.item_view,
             null, false
         )
@@ -83,8 +79,7 @@ class PageFragment(private val notesToBeInflated: List<Note>) : Fragment() {
         } else if (binding.item6.childCount == 0) {
             binding.item6.addView(view)
         } else {
-            vm.createPageTrigger.value = note
-            vm.insertNoteTrigger = MutableLiveData<Note>()
+            vm.createPageTrigger.value = note // Create new page when current is full.
         }
     }
 }

@@ -12,6 +12,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.viewpager2.widget.ViewPager2
 import com.yurakolesnikov.mooddiary.R
@@ -25,9 +26,6 @@ import com.yurakolesnikov.mooddiary.ui.PageFragment
 import com.yurakolesnikov.mooddiary.utils.hideSystemUI
 import com.yurakolesnikov.mooddiary.utils.roundToNextInt
 import dagger.hilt.android.AndroidEntryPoint
-
-// Всё переделать. Во-первых нужно изменить лайвдату на флоу. Во вторых понять, откуда удобнее
-// надувать вьюхи и создавать страницы.
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -71,9 +69,20 @@ class MainActivity : AppCompatActivity() {
             createPage(notesToBeInflated)
         })
 
+        // Delete all notes.
         vm.deleteAllNotesTrigger.observe(this, Observer {
             viewPagerAdapter.pageIds = viewPagerAdapter.pages.map { it.hashCode().toLong() }
             viewPagerAdapter.notifyDataSetChanged()
+        })
+
+        // Insert note.
+        vm.insertNoteTrigger.observe(this, Observer { note ->
+            if (vm.pages.isEmpty()) {
+                vm.createPageTrigger.value = note
+            } else {
+                vm.pages.last().inflateNote(note)
+                viewPager.setCurrentItem(vm.pages.lastIndex)
+            }
         })
     }
 
@@ -85,6 +94,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun numberOfPagesNeeded(notesNumber: Int): Int {
         return (notesNumber.toDouble() / 6).roundToNextInt()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
     }
 
 }
