@@ -87,8 +87,14 @@ class PageFragment(private val notesToBeInflated: List<Note>) : Fragment() {
         }
     }
 
-    fun onItemClick (viewId: Int, mood: Int) {
-        AddNoteFragment("Change your mood", mood).show(parentFragmentManager, "456")
+    fun updateNote (id: Int) {
+// Закончить тут. Нужно выяснить, в какой parent-контейнер обновлять вьюху.
+    }
+
+    fun onItemClick(viewId: Int, mood: Int) {
+        AddNoteFragment("Change your mood", mood, viewId)
+            .show(parentFragmentManager, "456")
+        vm.pageWhereNoteTapped = vm.pages.indexOf(this)
     }
 }
 

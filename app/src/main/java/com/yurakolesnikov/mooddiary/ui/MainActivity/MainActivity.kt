@@ -68,6 +68,7 @@ class MainActivity : AppCompatActivity() {
         vm.createPageTrigger.observe(this, Observer { note ->
             val notesToBeInflated = listOf(note)
             createPage(notesToBeInflated)
+            isFirstLaunch = false
         })
 
         // Delete all notes.
@@ -84,6 +85,11 @@ class MainActivity : AppCompatActivity() {
                 vm.pages.last().inflateNote(note)
                 viewPager.setCurrentItem(vm.pages.lastIndex)
             }
+        })
+
+        // Update note.
+        vm.updateNoteTrigger.observe(this, Observer { note ->
+                vm.pages[vm.pageWhereNoteTapped!!].updateNote(note.id)
         })
     }
 

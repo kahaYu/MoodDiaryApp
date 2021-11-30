@@ -26,7 +26,8 @@ import java.util.*
 @AndroidEntryPoint
 class AddNoteFragment(
     val text: String = "Rate your happiness today",
-    val initialMood: Int = 1
+    val initialMood: Int = 1,
+    val noteId: Int? = null
 ) : DialogFragment() {
 
     private var binding by AutoClearedValue<FragmentAddNoteBinding>(this)
@@ -64,9 +65,15 @@ class AddNoteFragment(
 
     fun onApplyPressed() {
         val sdf = getCurrentDateTime().toString("dd.MM.yyyy")
+        if (noteId == null) {
+            val newNote = Note(sdf, mood)
+            vm.insertNote(newNote)
+        } else {
+            val newNote = Note(sdf, mood)
+            newNote.id = noteId ?: 1
+            vm.updateNote(newNote)
+        }
         parentFragmentManager.beginTransaction().remove(this).commit()
-        val newNote = Note(0, sdf, mood)
-        vm.insertNote(newNote)
     }
 
 }

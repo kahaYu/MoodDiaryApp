@@ -8,10 +8,9 @@ import com.yurakolesnikov.mooddiary.utils.Converters
 
 @Entity
 class Note(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int,
     val date: String,
     val mood: Int
 ) {
-
+    @PrimaryKey(autoGenerate = true)
+    var id: Int = 0
 }

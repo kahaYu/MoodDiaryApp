@@ -26,6 +26,7 @@ class MainActivityViewModel @Inject constructor(
 
     fun updateNote(note: Note) {
         viewModelScope.launch { dao.updateNote(note) }
+        updateNoteTrigger.value = note
     }
 
     fun deleteNote(note: Note) {
@@ -42,7 +43,10 @@ class MainActivityViewModel @Inject constructor(
     fun getAllNotes() = dao.getAllNotes()
 
     var insertNoteTrigger = MutableLiveData<Note>()
+    var updateNoteTrigger = MutableLiveData<Note>()
     var createPageTrigger = MutableLiveData<Note>()
     var deleteAllNotesTrigger = MutableLiveData<Boolean>()
+
+    var pageWhereNoteTapped: Int? = null
 
 }

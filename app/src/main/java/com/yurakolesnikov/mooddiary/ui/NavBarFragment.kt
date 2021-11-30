@@ -51,18 +51,21 @@ class NavBarFragment : Fragment() {
         binding.fragment = this
 
         vm.getAllNotes().observe(viewLifecycleOwner, Observer { notes ->
-            lastNote = notes.last()
+            if (notes.size > 0) {
+                lastNote = notes.last()
+            } else lastNote = Note("00.00.0000", 1)
         })
 
     }
 
     fun onAddPressed () {
+        // Uncomment it, when app is ready.
         val sdf = getCurrentDateTime().toString("dd.MM.yyyy")
-        if (lastNote.date != sdf) {
+        // if (lastNote.date != sdf) {
             AddNoteFragment().show(parentFragmentManager, "123")
-        } else
-            Toast.makeText(requireContext(), "You've already rated your today's mood." +
-                    "\nTry again tomorrow.", Toast.LENGTH_SHORT).show()
+        //} else
+        //    Toast.makeText(requireContext(), "You've already rated your today's mood." +
+        //            "\nTry again tomorrow.", Toast.LENGTH_SHORT).show()
 
     }
 
