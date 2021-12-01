@@ -6,7 +6,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.children
+import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.MutableLiveData
@@ -57,6 +61,11 @@ class PageFragment(private val notesToBeInflated: List<Note>) : Fragment() {
         viewBinding.fragment = this
         viewBinding.viewId = note.id
         viewBinding.mood = note.mood
+        viewBinding.itemViewBinding = viewBinding
+        viewBinding.fragment = this
+
+
+
 
         val image: Drawable = when {
             note.mood <= 3 -> resources.getDrawable(R.drawable.emoji_1_3)
@@ -87,14 +96,30 @@ class PageFragment(private val notesToBeInflated: List<Note>) : Fragment() {
         }
     }
 
-    fun updateNote (id: Int) {
-// Закончить тут. Нужно выяснить, в какой parent-контейнер обновлять вьюху.
+    fun updateNote (itemViewBinding: ItemViewBinding) {
+        val image: Drawable = when {
+            itemViewBinding.tvMoodRating.text.toString().toInt() <= 3 -> resources.getDrawable(R
+                .drawable
+                .emoji_1_3)
+            itemViewBinding.tvMoodRating.text.toString().toInt() <= 6 -> resources.getDrawable(R.drawable.emoji_4_6)
+            itemViewBinding.tvMoodRating.text.toString().toInt() <= 9 -> resources.getDrawable(R.drawable.emoji_7_9)
+            else -> resources.getDrawable(R.drawable.emoji_10)
+        }
+        itemViewBinding.apply {
+            tvMoodRating.text = itemViewBinding.tvMoodRating.text
+            tvCurrentDate.text = itemViewBinding.tvCurrentDate.text
+            imageView.setImageDrawable(image)
+        }
     }
 
-    fun onItemClick(viewId: Int, mood: Int) {
+    fun onItemClick(viewId: Int, mood: Int, viewBinding: ViewDataBinding, page: PageFragment) {
         AddNoteFragment("Change your mood", mood, viewId)
             .show(parentFragmentManager, "456")
-        vm.pageWhereNoteTapped = vm.pages.indexOf(this)
+        vm.itemViewBinding = viewBinding as ItemViewBinding?
+        vm.pageFromWhereTapped = vm.pages.indexOf(page)
+
+
+
     }
 }
 

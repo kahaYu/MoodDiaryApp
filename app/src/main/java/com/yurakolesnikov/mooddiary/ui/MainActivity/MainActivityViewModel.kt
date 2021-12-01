@@ -1,10 +1,12 @@
 package com.yurakolesnikov.mooddiary.ui.MainActivity
 
+import android.widget.FrameLayout
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yurakolesnikov.mooddiary.database.Dao
 import com.yurakolesnikov.mooddiary.database.model.Note
+import com.yurakolesnikov.mooddiary.databinding.ItemViewBinding
 import com.yurakolesnikov.mooddiary.ui.PageFragment
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -47,6 +49,7 @@ class MainActivityViewModel @Inject constructor(
     var createPageTrigger = MutableLiveData<Note>()
     var deleteAllNotesTrigger = MutableLiveData<Boolean>()
 
-    var pageWhereNoteTapped: Int? = null
+    var itemViewBinding: ItemViewBinding? = null
+    var pageFromWhereTapped: Int? = null
 
 }
