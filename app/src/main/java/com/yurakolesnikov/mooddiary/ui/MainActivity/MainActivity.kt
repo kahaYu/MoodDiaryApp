@@ -93,7 +93,7 @@ class MainActivity : AppCompatActivity() {
 
         // Update note.
         vm.updateNoteTrigger.observe(this, Observer { note ->
-            vm.pages[vm.pageFromWhereTapped!!].updateNote(vm.itemViewBinding!!)
+            vm.pages[vm.pageFromWhereTapped!!].updateNote(vm.itemViewBinding!!, note.mood)
             isFirstLaunch = false
         })
 

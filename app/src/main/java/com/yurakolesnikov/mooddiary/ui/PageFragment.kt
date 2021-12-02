@@ -68,8 +68,6 @@ class PageFragment(private val notesToBeInflated: List<Note>) : Fragment() {
         viewBinding.fragment = this
 
 
-
-
         val image: Drawable = when {
             note.mood <= 3 -> resources.getDrawable(R.drawable.emoji_1_3)
             note.mood <= 6 -> resources.getDrawable(R.drawable.emoji_4_6)
@@ -99,18 +97,15 @@ class PageFragment(private val notesToBeInflated: List<Note>) : Fragment() {
         }
     }
 
-    fun updateNote (itemViewBinding: ItemViewBinding) {
+    fun updateNote(itemViewBinding: ItemViewBinding, mood: Int) {
         val image: Drawable = when {
-            itemViewBinding.tvMoodRating.text.toString().toInt() <= 3 -> resources.getDrawable(R
-                .drawable
-                .emoji_1_3)
-            itemViewBinding.tvMoodRating.text.toString().toInt() <= 6 -> resources.getDrawable(R.drawable.emoji_4_6)
-            itemViewBinding.tvMoodRating.text.toString().toInt() <= 9 -> resources.getDrawable(R.drawable.emoji_7_9)
+            mood <= 3 -> resources.getDrawable(R.drawable.emoji_1_3)
+            mood <= 6 -> resources.getDrawable(R.drawable.emoji_4_6)
+            mood <= 9 -> resources.getDrawable(R.drawable.emoji_7_9)
             else -> resources.getDrawable(R.drawable.emoji_10)
         }
         itemViewBinding.apply {
-            tvMoodRating.text = itemViewBinding.tvMoodRating.text
-            tvCurrentDate.text = itemViewBinding.tvCurrentDate.text
+            tvMoodRating.text = mood.toString()
             imageView.setImageDrawable(image)
         }
     }
