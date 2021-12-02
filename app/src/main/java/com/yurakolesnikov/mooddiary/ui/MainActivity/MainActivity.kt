@@ -53,6 +53,7 @@ class MainActivity : AppCompatActivity() {
         // Prepopulation.
         vm.getAllNotes().observe(this, Observer { notes ->
             val numberOfPagesNeeded = (notes.size.toDouble() / 6).roundToNextInt()
+            if (notes.size > 0) NOTE_ID = notes.last().id + 1
             if (isFirstLaunch && numberOfPagesNeeded > 0) { // If pages is 0, no need to create.
                 val notesToBeInflatedChunked = notes.chunked(6) // Divide by 6 items parts.
                 for (page in 1..numberOfPagesNeeded) {
@@ -75,6 +76,8 @@ class MainActivity : AppCompatActivity() {
         vm.deleteAllNotesTrigger.observe(this, Observer {
             viewPagerAdapter.pageIds = viewPagerAdapter.pages.map { it.hashCode().toLong() }
             viewPagerAdapter.notifyDataSetChanged()
+            NOTE_ID = 0
+            isFirstLaunch = false
         })
 
         // Insert note.
@@ -85,12 +88,15 @@ class MainActivity : AppCompatActivity() {
                 vm.pages.last().inflateNote(note)
                 viewPager.setCurrentItem(vm.pages.lastIndex)
             }
+            isFirstLaunch = false
         })
 
         // Update note.
         vm.updateNoteTrigger.observe(this, Observer { note ->
             vm.pages[vm.pageFromWhereTapped!!].updateNote(vm.itemViewBinding!!)
+            isFirstLaunch = false
         })
+
     }
 
     private fun createPage(notesToBeInflated: List<Note>) {
@@ -110,6 +116,10 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
     }
+
+companion object {
+    var NOTE_ID = 0
+}
 }
 
 

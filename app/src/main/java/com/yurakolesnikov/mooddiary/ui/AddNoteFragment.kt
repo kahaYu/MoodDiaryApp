@@ -14,6 +14,7 @@ import androidx.fragment.app.activityViewModels
 import com.yurakolesnikov.mooddiary.R
 import com.yurakolesnikov.mooddiary.database.model.Note
 import com.yurakolesnikov.mooddiary.databinding.FragmentAddNoteBinding
+import com.yurakolesnikov.mooddiary.ui.MainActivity.MainActivity
 import com.yurakolesnikov.mooddiary.ui.MainActivity.MainActivityViewModel
 import com.yurakolesnikov.mooddiary.utils.AutoClearedValue
 import com.yurakolesnikov.mooddiary.utils.getCurrentDateTime
@@ -27,7 +28,7 @@ import java.util.*
 class AddNoteFragment(
     val text: String = "Rate your happiness today",
     val initialMood: Int = 1,
-    val noteId: Int? = null
+    val note: Note? = null
 ) : DialogFragment() {
 
     private var binding by AutoClearedValue<FragmentAddNoteBinding>(this)
@@ -65,13 +66,14 @@ class AddNoteFragment(
 
     fun onApplyPressed() {
         val sdf = getCurrentDateTime().toString("dd.MM.yyyy")
-        if (noteId == null) {
-            val newNote = Note(sdf, mood)
+        if (note == null) {
+            val newNote = Note(sdf, mood, MainActivity.NOTE_ID)
+            MainActivity.NOTE_ID++
             vm.insertNote(newNote)
         } else {
-            val newNote = Note(sdf, mood)
-            newNote.id = noteId ?: 1
-            vm.updateNote(newNote)
+            note.mood = mood
+            val id = note.id
+            vm.updateNote(note)
         }
         parentFragmentManager.beginTransaction().remove(this).commit()
     }

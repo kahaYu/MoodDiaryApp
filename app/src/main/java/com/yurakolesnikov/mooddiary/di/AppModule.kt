@@ -7,6 +7,7 @@ import androidx.room.Room
 import androidx.room.TypeConverters
 import com.yurakolesnikov.mooddiary.database.Dao
 import com.yurakolesnikov.mooddiary.database.NotesDatabase
+import com.yurakolesnikov.mooddiary.ui.MainActivity.MainActivity
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

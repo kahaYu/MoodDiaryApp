@@ -9,8 +9,8 @@
             type="com.yurakolesnikov.mooddiary.ui.PageFragment" />
 
         <variable
-            name="viewId"
-            type="Integer" />
+            name="note"
+            type="com.yurakolesnikov.mooddiary.database.model.Note" />
 
         <variable
             name="mood"
@@ -26,7 +26,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:onClick="@{() -> fragment.onItemClick(viewId, mood, itemViewBinding, fragment)}">
+        android:onClick="@{() -> fragment.onItemClick(note, mood, itemViewBinding, fragment)}">
 
         <ImageView
             android:id="@+id/image_view"

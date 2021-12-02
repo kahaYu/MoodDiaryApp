@@ -30,6 +30,8 @@ class PageFragment(private val notesToBeInflated: List<Note>) : Fragment() {
 
     private val vm: MainActivityViewModel by activityViewModels()
 
+    private lateinit var notesNoLiveData: List<Note>
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -47,6 +49,7 @@ class PageFragment(private val notesToBeInflated: List<Note>) : Fragment() {
         for (note in notesToBeInflated) {
             inflateNote(note) // Inflating notes needed.
         }
+
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -59,7 +62,7 @@ class PageFragment(private val notesToBeInflated: List<Note>) : Fragment() {
 
         val viewBinding = ItemViewBinding.bind(view)
         viewBinding.fragment = this
-        viewBinding.viewId = note.id
+        viewBinding.note = note
         viewBinding.mood = note.mood
         viewBinding.itemViewBinding = viewBinding
         viewBinding.fragment = this
@@ -112,14 +115,15 @@ class PageFragment(private val notesToBeInflated: List<Note>) : Fragment() {
         }
     }
 
-    fun onItemClick(viewId: Int, mood: Int, viewBinding: ViewDataBinding, page: PageFragment) {
-        AddNoteFragment("Change your mood", mood, viewId)
+    fun onItemClick(note: Note, mood: Int, viewBinding: ViewDataBinding, page: PageFragment) {
+        AddNoteFragment("Change your mood", mood, note)
             .show(parentFragmentManager, "456")
         vm.itemViewBinding = viewBinding as ItemViewBinding?
         vm.pageFromWhereTapped = vm.pages.indexOf(page)
+    }
 
-
-
+    companion object {
+        var allNotes: List<Note>? = null
     }
 }
 
