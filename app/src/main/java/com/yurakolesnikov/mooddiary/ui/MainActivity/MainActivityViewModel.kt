@@ -1,5 +1,6 @@
 package com.yurakolesnikov.mooddiary.ui.MainActivity
 
+import android.graphics.drawable.Drawable
 import android.widget.FrameLayout
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -45,6 +46,10 @@ class MainActivityViewModel @Inject constructor(
 
     fun getAllNotes() = dao.getAllNotes()
 
+    fun setPreviewImage(image: Drawable) {
+        previewImage.value = image
+    }
+
     var insertNoteTrigger = MutableLiveData<Note>()
     var updateNoteTrigger = MutableLiveData<Note>()
     var createPageTrigger = MutableLiveData<Note>()
@@ -52,5 +57,7 @@ class MainActivityViewModel @Inject constructor(
 
     var itemViewBinding: ItemViewBinding? = null
     var pageFromWhereTapped: Int? = null
+
+    var previewImage = MutableLiveData<Drawable>()
 
 }

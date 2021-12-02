@@ -4,8 +4,10 @@ import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.Editable
+import android.text.TextWatcher
 import android.view.*
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.ActionBar
@@ -61,7 +63,23 @@ class AddNoteFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.fragment = this
+        binding.vm = vm
+        binding.lifecycleOwner = this
 
+        binding.autoCompleteTextView.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            @SuppressLint("UseCompatLoadingForDrawables")
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                val image: Drawable = when {
+                    p0.toString().toInt() <= 3 -> resources.getDrawable(R.drawable.emoji_1_3)
+                    p0.toString().toInt() <= 6 -> resources.getDrawable(R.drawable.emoji_4_6)
+                    p0.toString().toInt() <= 9 -> resources.getDrawable(R.drawable.emoji_7_9)
+                    else -> resources.getDrawable(R.drawable.emoji_10)
+                }
+                vm.setPreviewImage(image)
+            }
+            override fun afterTextChanged(p0: Editable?) {}
+        })
     }
 
     fun onApplyPressed() {

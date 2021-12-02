@@ -8,6 +8,10 @@
             name="fragment"
             type="com.yurakolesnikov.mooddiary.ui.AddNoteFragment" />
 
+        <variable
+            name="vm"
+            type="com.yurakolesnikov.mooddiary.ui.MainActivity.MainActivityViewModel" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -29,7 +33,8 @@
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/text_field"
@@ -46,9 +51,10 @@
             app:boxStrokeColor="@color/color_selector"
             app:boxStrokeWidth="4dp"
             app:boxStrokeWidthFocused="4dp"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/previewImage"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_rateYourHappiness">
+            app:layout_constraintTop_toBottomOf="@+id/tv_rateYourHappiness"
+            android:layout_marginStart="40dp">
 
             <AutoCompleteTextView
                 android:id="@+id/autoCompleteTextView"
@@ -57,9 +63,21 @@
                 android:layout_weight="1"
                 android:inputType="none"
                 android:paddingVertical="0dp"
-                android:text="1"/>
+                android:text="1" />
 
         </com.google.android.material.textfield.TextInputLayout>
+
+        <ImageView
+            android:id="@+id/previewImage"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@{vm.previewImage}"
+            app:layout_constraintTop_toTopOf="@id/text_field"
+            app:layout_constraintBottom_toBottomOf="@id/text_field"
+            app:layout_constraintStart_toEndOf="@id/text_field"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="40dp"
+            android:layout_marginTop="5dp"/>
 
         <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
             android:id="@+id/apply_button"
@@ -69,6 +87,7 @@
             android:layout_marginBottom="20dp"
             android:backgroundTint="@color/icon"
             android:drawablePadding="10dp"
+            android:onClick="@{() -> fragment.onApplyPressed()}"
             android:shadowColor="@color/icon"
             android:text="@string/apply"
             android:textAllCaps="false"
@@ -80,9 +99,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/text_field"
-            android:onClick="@{() -> fragment.onApplyPressed()}"/>
-
+            app:layout_constraintTop_toBottomOf="@id/text_field" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
