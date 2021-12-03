@@ -10,5 +10,6 @@
     <color name="dropDown">#2CA7FFEB</color>
     <color name="transparent">#00000000</color>
     <color name="strokeColor">@color/fab</color>
+    <color name="gray">#505050</color>
 </resources>
 

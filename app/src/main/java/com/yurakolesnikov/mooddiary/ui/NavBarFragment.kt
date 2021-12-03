@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -54,14 +55,10 @@ class NavBarFragment : Fragment() {
     }
 
     fun onAddPressed () {
-        // Uncomment it, when app is ready.
         val sdf = getCurrentDateTime().toString("dd.MM.yyyy")
-        // if (lastNote.date != sdf) {
-            AddNoteFragment().show(parentFragmentManager, "123")
-        //} else
-        //    Toast.makeText(requireContext(), "You've already rated your today's mood." +
-        //            "\nTry again tomorrow.", Toast.LENGTH_SHORT).show()
-
+         if (lastNote.date != sdf) {AddNoteFragment().show(parentFragmentManager, "123")
+        } else
+             ConfirmationFragment().show(parentFragmentManager, "ConfirmationFragment")
     }
 
     fun onDeleteAllPressed () {
