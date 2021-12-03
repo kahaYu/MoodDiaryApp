@@ -1,5 +1,7 @@
 package com.yurakolesnikov.mooddiary.ui.mainActivity
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.*
 import androidx.activity.viewModels
@@ -26,6 +28,9 @@ class MainActivity : AppCompatActivity() {
 
     var isFirstLaunch = true
 
+    private lateinit var sharedPref: SharedPreferences
+    private lateinit var editor: SharedPreferences.Editor
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         var binding = ActivityMainBinding.inflate(layoutInflater, null, false)
@@ -36,6 +41,12 @@ class MainActivity : AppCompatActivity() {
         viewPager = binding.viewPagerContainer
         viewPagerAdapter = ViewPagerAdapter(this, vm.pages)
         viewPager.adapter = viewPagerAdapter
+
+        sharedPref = getSharedPreferences("Settings", Context.MODE_PRIVATE)
+        editor = sharedPref.edit()
+
+        vm.isAlwaysYes = sharedPref.getBoolean("isAlwaysYes", false)
+        vm.isAlwaysNo = sharedPref.getBoolean("isAlwaysNo", false)
 
         // Prepopulation.
         vm.getAllNotes().observe(this, Observer { notes ->
@@ -86,6 +97,16 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    override fun onStop() {
+        super.onStop()
+        editor.apply {
+            putBoolean("isAlwaysYes", vm.isAlwaysYes)
+            putBoolean("isAlwaysNo", vm.isAlwaysNo)
+            apply()
+        }
+
+    }
+
     private fun createPage(notesToBeInflated: List<Note>) {
         vm.pages.add(PageFragment(notesToBeInflated))
         viewPagerAdapter.notifyItemInserted(vm.pages.size - 1)
@@ -96,17 +117,10 @@ class MainActivity : AppCompatActivity() {
         return (notesNumber.toDouble() / 6).roundToNextInt()
     }
 
-    override fun onStart() {
-        super.onStart()
-    }
 
-    override fun onResume() {
-        super.onResume()
+    companion object {
+        var NOTE_ID = 0
     }
-
-companion object {
-    var NOTE_ID = 0
-}
 }
 
 
