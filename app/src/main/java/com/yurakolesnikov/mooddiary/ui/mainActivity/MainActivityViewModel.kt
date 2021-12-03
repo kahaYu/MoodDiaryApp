@@ -1,7 +1,6 @@
-package com.yurakolesnikov.mooddiary.ui.MainActivity
+package com.yurakolesnikov.mooddiary.ui.mainActivity
 
 import android.graphics.drawable.Drawable
-import android.widget.FrameLayout
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,8 +9,6 @@ import com.yurakolesnikov.mooddiary.database.model.Note
 import com.yurakolesnikov.mooddiary.databinding.ItemViewBinding
 import com.yurakolesnikov.mooddiary.ui.PageFragment
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 

@@ -10,7 +10,7 @@
 
         <variable
             name="vm"
-            type="com.yurakolesnikov.mooddiary.ui.MainActivity.MainActivityViewModel" />
+            type="com.yurakolesnikov.mooddiary.ui.mainActivity.MainActivityViewModel" />
 
     </data>
 

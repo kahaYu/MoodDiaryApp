@@ -2,7 +2,7 @@ package com.yurakolesnikov.mooddiary.adapters
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.yurakolesnikov.mooddiary.ui.MainActivity.MainActivity
+import com.yurakolesnikov.mooddiary.ui.mainActivity.MainActivity
 import com.yurakolesnikov.mooddiary.ui.PageFragment
 
 class ViewPagerAdapter(

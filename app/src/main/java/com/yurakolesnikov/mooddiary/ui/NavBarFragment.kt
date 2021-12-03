@@ -1,20 +1,15 @@
 package com.yurakolesnikov.mooddiary.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.commit
 import androidx.lifecycle.Observer
-import com.yurakolesnikov.mooddiary.R
 import com.yurakolesnikov.mooddiary.database.model.Note
 import com.yurakolesnikov.mooddiary.databinding.FragmentNavBarBinding
-import com.yurakolesnikov.mooddiary.sharedViewModels.SharedViewModel
-import com.yurakolesnikov.mooddiary.ui.MainActivity.MainActivityViewModel
+import com.yurakolesnikov.mooddiary.ui.mainActivity.MainActivityViewModel
 import com.yurakolesnikov.mooddiary.utils.AutoClearedValue
 import com.yurakolesnikov.mooddiary.utils.getCurrentDateTime
 import com.yurakolesnikov.mooddiary.utils.toString

@@ -1,7 +1,6 @@
 package com.yurakolesnikov.mooddiary.ui
 
 import android.annotation.SuppressLint
-import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
@@ -10,26 +9,23 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.*
 import android.widget.ArrayAdapter
-import androidx.appcompat.app.ActionBar
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import com.yurakolesnikov.mooddiary.R
 import com.yurakolesnikov.mooddiary.database.model.Note
 import com.yurakolesnikov.mooddiary.databinding.FragmentAddNoteBinding
-import com.yurakolesnikov.mooddiary.ui.MainActivity.MainActivity
-import com.yurakolesnikov.mooddiary.ui.MainActivity.MainActivityViewModel
+import com.yurakolesnikov.mooddiary.ui.mainActivity.MainActivity
+import com.yurakolesnikov.mooddiary.ui.mainActivity.MainActivityViewModel
 import com.yurakolesnikov.mooddiary.utils.AutoClearedValue
 import com.yurakolesnikov.mooddiary.utils.getCurrentDateTime
 import com.yurakolesnikov.mooddiary.utils.toString
 import com.yurakolesnikov.mooddiary.utils.hideSystemUI
 import dagger.hilt.android.AndroidEntryPoint
-import java.text.SimpleDateFormat
 import java.util.*
 
 @AndroidEntryPoint
 class AddNoteFragment(
     val text: String = "Rate your happiness today",
-    val initialMood: Int = 1,
     val note: Note? = null
 ) : DialogFragment() {
 
@@ -56,7 +52,6 @@ class AddNoteFragment(
         val arrayAdapter = ArrayAdapter(requireContext(), R.layout.dropdowm_item, numbers)
         binding.autoCompleteTextView.setAdapter(arrayAdapter)
         binding.tvRateYourHappiness.text = text
-        binding.autoCompleteTextView.setText(initialMood.toString(), false)
         return binding.root
     }
 
@@ -65,6 +60,21 @@ class AddNoteFragment(
         binding.fragment = this
         binding.vm = vm
         binding.lifecycleOwner = this
+
+        var image: Drawable = resources.getDrawable(R.drawable.emoji_1_3)
+        if (note == null) {
+            binding.autoCompleteTextView.setText("1", false)
+        } else {
+            binding.autoCompleteTextView.setText(note.mood.toString(), false)
+            image = when {
+                note.mood <= 3 -> resources.getDrawable(R.drawable.emoji_1_3)
+                note.mood <= 6 -> resources.getDrawable(R.drawable.emoji_4_6)
+                note.mood <= 9 -> resources.getDrawable(R.drawable.emoji_7_9)
+                else -> resources.getDrawable(R.drawable.emoji_10)
+            }
+
+        }
+        vm.setPreviewImage(image)
 
         binding.autoCompleteTextView.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}

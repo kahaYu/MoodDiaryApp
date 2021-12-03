@@ -6,20 +6,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
-import android.widget.Toast
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.children
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import com.yurakolesnikov.mooddiary.R
 import com.yurakolesnikov.mooddiary.database.model.Note
 import com.yurakolesnikov.mooddiary.databinding.FragmentPageBinding
 import com.yurakolesnikov.mooddiary.databinding.ItemViewBinding
-import com.yurakolesnikov.mooddiary.ui.MainActivity.MainActivityViewModel
+import com.yurakolesnikov.mooddiary.ui.mainActivity.MainActivityViewModel
 import com.yurakolesnikov.mooddiary.utils.AutoClearedValue
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -111,7 +105,7 @@ class PageFragment(private val notesToBeInflated: List<Note>) : Fragment() {
     }
 
     fun onItemClick(note: Note, mood: Int, viewBinding: ViewDataBinding, page: PageFragment) {
-        AddNoteFragment("Change your mood", mood, note)
+        AddNoteFragment("Change your mood", note)
             .show(parentFragmentManager, "456")
         vm.itemViewBinding = viewBinding as ItemViewBinding?
         vm.pageFromWhereTapped = vm.pages.indexOf(page)
