@@ -57,4 +57,8 @@ class MainActivityViewModel @Inject constructor(
 
     var previewImage = MutableLiveData<Drawable>()
 
+    var isChecked = false
+    var isAlwaysYes = false
+    var isAlwaysNo = false
+
 }

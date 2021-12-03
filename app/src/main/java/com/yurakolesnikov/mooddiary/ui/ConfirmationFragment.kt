@@ -52,16 +52,14 @@ class ConfirmationFragment : DialogFragment() {
         binding.vm = vm
     }
 
-    fun onYesPressed () {
-
+    fun onYesPressed() {
+        if (vm.isChecked) vm.isAlwaysYes = true
+        parentFragmentManager.beginTransaction().remove(this).commit()
+        AddNoteFragment().show(parentFragmentManager, "123")
     }
 
-    fun onNoPressed () {
-
+    fun onNoPressed() {
+        if (vm.isChecked) vm.isAlwaysNo = true
+        parentFragmentManager.beginTransaction().remove(this).commit()
     }
-
-    fun onChecked () {
-
-    }
-
 }

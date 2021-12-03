@@ -4,7 +4,7 @@
     <string name="sort">Sort</string>
     <string name="filter">Filter</string>
     <string name="rate_your_happiness">Rate your happiness today</string>
-    <string name="are_you_sure">Are you sure you want to rate the same day twice? </string>
+    <string name="are_you_sure">Do you want to rate the today twice? </string>
     <string name="apply">Apply</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>

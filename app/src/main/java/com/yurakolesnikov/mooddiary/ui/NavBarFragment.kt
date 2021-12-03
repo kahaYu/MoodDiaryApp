@@ -56,9 +56,12 @@ class NavBarFragment : Fragment() {
 
     fun onAddPressed () {
         val sdf = getCurrentDateTime().toString("dd.MM.yyyy")
-         if (lastNote.date != sdf) {AddNoteFragment().show(parentFragmentManager, "123")
-        } else
-             ConfirmationFragment().show(parentFragmentManager, "ConfirmationFragment")
+         if (lastNote.date != sdf || vm.isAlwaysYes) {
+             AddNoteFragment().show(parentFragmentManager, "123")
+        } else if (lastNote.date == sdf && vm.isAlwaysNo) {
+            Toast.makeText(requireContext(), "Try again tomorrow", Toast.LENGTH_SHORT).show()
+         } else
+             ConfirmationFragment().show(parentFragmentManager, "Conf fragment")
     }
 
     fun onDeleteAllPressed () {
