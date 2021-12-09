@@ -56,6 +56,7 @@ class MainActivityViewModel @Inject constructor(
     var pageFromWhereTapped: Int? = null
 
     var previewImage = MutableLiveData<Drawable>()
+    var isVisible = MutableLiveData<Boolean>()
 
     var isChecked = false
     var isAlwaysYes = false

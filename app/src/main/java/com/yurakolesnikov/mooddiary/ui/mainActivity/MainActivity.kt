@@ -1,11 +1,15 @@
 package com.yurakolesnikov.mooddiary.ui.mainActivity
 
+import android.R
 import android.content.Context
 import android.content.SharedPreferences
+import android.opengl.Visibility
 import android.os.Bundle
 import android.view.*
+import android.view.View.GONE
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.viewpager2.widget.ViewPager2
 import com.yurakolesnikov.mooddiary.adapters.ViewPagerAdapter
@@ -16,6 +20,10 @@ import com.yurakolesnikov.mooddiary.ui.PageFragment
 import com.yurakolesnikov.mooddiary.utils.hideSystemUI
 import com.yurakolesnikov.mooddiary.utils.roundToNextInt
 import dagger.hilt.android.AndroidEntryPoint
+import me.relex.circleindicator.CircleIndicator3
+
+
+
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -42,6 +50,10 @@ class MainActivity : AppCompatActivity() {
         viewPagerAdapter = ViewPagerAdapter(this, vm.pages)
         viewPager.adapter = viewPagerAdapter
 
+        val indicator: CircleIndicator3 = binding.indicator
+        indicator.setViewPager(viewPager)
+        viewPagerAdapter.registerAdapterDataObserver(indicator.getAdapterDataObserver())
+
         sharedPref = getSharedPreferences("Settings", Context.MODE_PRIVATE)
         editor = sharedPref.edit()
 
@@ -50,6 +62,9 @@ class MainActivity : AppCompatActivity() {
 
         // Prepopulation.
         vm.getAllNotes().observe(this, Observer { notes ->
+
+            indicator.visibility = if (notes.size >= 7) View.VISIBLE else View.INVISIBLE
+
             val numberOfPagesNeeded = (notes.size.toDouble() / 6).roundToNextInt()
             if (notes.size > 0) NOTE_ID = notes.last().id + 1
             if (isFirstLaunch && numberOfPagesNeeded > 0) { // If pages is 0, no need to create.

@@ -8,10 +8,10 @@
     </data>
 
     <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/screen"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:id="@+id/screen">
+        android:orientation="vertical">
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewPagerContainer"
@@ -22,12 +22,22 @@
 
         </androidx.viewpager2.widget.ViewPager2>
 
+        <me.relex.circleindicator.CircleIndicator3
+            android:id="@+id/indicator"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_gravity="center_horizontal"
+            app:ci_drawable="@drawable/dot_active"
+            app:ci_drawable_unselected="@drawable/dot_inactive"
+            app:ci_height="7dp"
+            app:ci_width="7dp" />
+
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fragmentContainerView"
             android:name="com.yurakolesnikov.mooddiary.ui.NavBarFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"/>
+            android:layout_gravity="bottom" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 </layout>
