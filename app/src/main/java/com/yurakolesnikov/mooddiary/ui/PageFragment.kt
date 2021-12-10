@@ -1,6 +1,7 @@
 package com.yurakolesnikov.mooddiary.ui
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -29,6 +30,7 @@ class PageFragment(private val notesToBeInflated: List<Note>) : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
+
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentPageBinding.inflate(layoutInflater, null, false)
@@ -43,6 +45,8 @@ class PageFragment(private val notesToBeInflated: List<Note>) : Fragment() {
         for (note in notesToBeInflated) {
             inflateNote(note) // Inflating notes needed.
         }
+
+
 
     }
 
@@ -76,17 +80,19 @@ class PageFragment(private val notesToBeInflated: List<Note>) : Fragment() {
 
         if (binding.item1.childCount == 0) {
             binding.item1.addView(view)
-        } else if (binding.item2.childCount == 0) {
+        }
+            else if (binding.item2.childCount == 0) {
             binding.item2.addView(view)
-        } else if (binding.item3.childCount == 0) {
+                } else if (binding.item3.childCount == 0) {
             binding.item3.addView(view)
-        } else if (binding.item4.childCount == 0) {
+                } else if (binding.item4.childCount == 0) {
             binding.item4.addView(view)
-        } else if (binding.item5.childCount == 0) {
+                } else if (binding.item5.childCount == 0) {
             binding.item5.addView(view)
-        } else if (binding.item6.childCount == 0) {
+                } else if (binding.item6.childCount == 0) {
             binding.item6.addView(view)
-        } else {
+                }
+        else {
             vm.createPageTrigger.value = note // Create new page when current is full.
         }
     }
@@ -109,6 +115,11 @@ class PageFragment(private val notesToBeInflated: List<Note>) : Fragment() {
             .show(parentFragmentManager, "456")
         vm.itemViewBinding = viewBinding as ItemViewBinding?
         vm.pageFromWhereTapped = vm.pages.indexOf(page)
+    }
+
+    override fun onResume() {
+        super.onResume()
+
     }
 
     companion object {

@@ -43,6 +43,10 @@ class MainActivityViewModel @Inject constructor(
 
     fun getAllNotes() = dao.getAllNotes()
 
+    fun deleteFirstSixNotes() {
+        viewModelScope.launch { dao.deleteFirstSixNotes() }
+    }
+
     fun setPreviewImage(image: Drawable) {
         previewImage.value = image
     }

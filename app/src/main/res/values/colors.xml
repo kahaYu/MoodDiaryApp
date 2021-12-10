@@ -3,6 +3,7 @@
 
 
     <color name="icon">#80D8FF</color>
+    <color name="iconTransp">#8080D8FF</color>
     <color name="fab">#31C1FF</color>
     <color name="iconOnClick">#FFE57F</color>
     <color name="white">#FFFFFF</color>
@@ -11,5 +12,6 @@
     <color name="transparent">#00000000</color>
     <color name="strokeColor">@color/fab</color>
     <color name="gray">#505050</color>
+    <color name="grayTransp">#80505050</color>
 </resources>
 

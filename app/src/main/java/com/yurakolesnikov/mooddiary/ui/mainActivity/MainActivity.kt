@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.opengl.Visibility
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.view.View.GONE
 import androidx.activity.viewModels
@@ -21,8 +22,6 @@ import com.yurakolesnikov.mooddiary.utils.hideSystemUI
 import com.yurakolesnikov.mooddiary.utils.roundToNextInt
 import dagger.hilt.android.AndroidEntryPoint
 import me.relex.circleindicator.CircleIndicator3
-
-
 
 
 @AndroidEntryPoint
@@ -63,7 +62,7 @@ class MainActivity : AppCompatActivity() {
         // Prepopulation.
         vm.getAllNotes().observe(this, Observer { notes ->
 
-            indicator.visibility = if (notes.size >= 7) View.VISIBLE else View.INVISIBLE
+            //if (notes.size > 18) vm.deleteFirstSixNotes()
 
             val numberOfPagesNeeded = (notes.size.toDouble() / 6).roundToNextInt()
             if (notes.size > 0) NOTE_ID = notes.last().id + 1
@@ -102,6 +101,7 @@ class MainActivity : AppCompatActivity() {
                 viewPager.setCurrentItem(vm.pages.lastIndex)
             }
             isFirstLaunch = false
+
         })
 
         // Update note.
@@ -122,9 +122,20 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    private fun deletePage () {
+        vm.deleteFirstSixNotes()
+        vm.pages.removeAt(0)
+        viewPagerAdapter.notifyItemRemoved(0)
+        viewPager.setCurrentItem(vm.pages.lastIndex, true)
+    }
+
     private fun createPage(notesToBeInflated: List<Note>) {
+
+        if (vm.pages.size == 3) deletePage()
+
         vm.pages.add(PageFragment(notesToBeInflated))
-        viewPagerAdapter.notifyItemInserted(vm.pages.size - 1)
+        viewPagerAdapter.notifyItemInserted(vm.pages.lastIndex)
+        Log.d("Check", "After: there are ${vm.pages.size} pages")
         viewPager.setCurrentItem(vm.pages.lastIndex, true)
     }
 

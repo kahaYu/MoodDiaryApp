@@ -20,6 +20,9 @@ interface Dao {
     @Query ("DELETE FROM Note")
     suspend fun deleteAllNotes ()
 
+    @Query("DELETE FROM Note WHERE id IN (SELECT id FROM (SELECT ID FROM Note ORDER BY id ASC LIMIT 6))")
+    suspend fun deleteFirstSixNotes()
+
     @Query ("SELECT * FROM Note")
     fun getAllNotes () : LiveData<List<Note>>
 }
