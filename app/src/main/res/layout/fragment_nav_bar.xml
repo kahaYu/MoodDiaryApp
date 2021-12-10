@@ -17,15 +17,18 @@
 
         <ImageButton
             android:id="@+id/button_delete_all"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="40dp"
-            android:background="@android:color/transparent"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="18dp"
+            android:src="@drawable/button_delete_all"
+            android:scaleType="fitXY"
             android:onClick="@{() -> fragment.onDeleteAllPressed()}"
-            android:src="@drawable/ic_delete_all"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="visible" />
+
 
         <ImageButton
             android:id="@+id/button_sort"
@@ -58,6 +61,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="12dp"
             android:layout_marginBottom="8dp"
+            android:elevation="2dp"
             android:onClick="@{() -> fragment.onAddPressed()}"
             android:src="@drawable/ic_add"
             app:backgroundTint="@color/fab"
@@ -67,20 +71,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:maxImageSize="15dp"
-            app:tint="@color/white"
-            android:elevation="2dp"/>
-
-        <TextView
-            android:id="@+id/tv_delete_all"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="@string/delete_all"
-            android:textColor="@color/icon"
-            android:textSize="@dimen/text_size"
-            app:layout_constraintEnd_toEndOf="@+id/button_delete_all"
-            app:layout_constraintStart_toStartOf="@+id/button_delete_all"
-            app:layout_constraintTop_toBottomOf="@+id/button_delete_all" />
+            app:tint="@color/white" />
 
         <TextView
             android:id="@+id/tv_sort"

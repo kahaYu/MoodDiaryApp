@@ -40,8 +40,6 @@ class PageFragment(private val notesToBeInflated: List<Note>) : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.tvHash.text = this.hashCode().toString()
-
         for (note in notesToBeInflated) {
             inflateNote(note) // Inflating notes needed.
         }
