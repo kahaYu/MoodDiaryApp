@@ -119,7 +119,6 @@ class MainActivity : AppCompatActivity() {
             putBoolean("isAlwaysNo", vm.isAlwaysNo)
             apply()
         }
-
     }
 
     private fun deletePage () {

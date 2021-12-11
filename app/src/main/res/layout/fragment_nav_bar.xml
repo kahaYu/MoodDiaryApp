@@ -17,12 +17,12 @@
 
         <ImageButton
             android:id="@+id/button_delete_all"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
             android:layout_marginStart="30dp"
             android:layout_marginTop="18dp"
             android:src="@drawable/button_delete_all"
-            android:scaleType="fitXY"
+            android:scaleType="fitCenter"
             android:onClick="@{() -> fragment.onDeleteAllPressed()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -32,11 +32,12 @@
 
         <ImageButton
             android:id="@+id/button_sort"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
             android:onClick="@{() -> fragment.onSortPressed()}"
-            android:src="@drawable/ic_sort"
+            android:src="@drawable/button_sort"
+            android:scaleType="fitCenter"
+            android:layout_marginTop="18dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/button_filter"
             app:layout_constraintStart_toEndOf="@id/button_delete_all"
@@ -44,12 +45,13 @@
 
         <ImageButton
             android:id="@+id/button_filter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="40dp"
-            android:background="@android:color/transparent"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:layout_marginEnd="30dp"
             android:onClick="@{() -> fragment.onFilterPressed()}"
-            android:src="@drawable/ic_filter"
+            android:src="@drawable/button_filter"
+            android:scaleType="fitCenter"
+            android:layout_marginTop="18dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/button_add"
             app:layout_constraintTop_toTopOf="parent" />
@@ -72,30 +74,6 @@
             app:layout_constraintTop_toTopOf="parent"
             app:maxImageSize="15dp"
             app:tint="@color/white" />
-
-        <TextView
-            android:id="@+id/tv_sort"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="@string/sort"
-            android:textColor="@color/icon"
-            android:textSize="@dimen/text_size"
-            app:layout_constraintEnd_toEndOf="@+id/button_sort"
-            app:layout_constraintStart_toStartOf="@+id/button_sort"
-            app:layout_constraintTop_toBottomOf="@+id/button_sort" />
-
-        <TextView
-            android:id="@+id/tv_filter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="@string/filter"
-            android:textColor="@color/icon"
-            android:textSize="@dimen/text_size"
-            app:layout_constraintEnd_toEndOf="@+id/button_filter"
-            app:layout_constraintStart_toStartOf="@+id/button_filter"
-            app:layout_constraintTop_toBottomOf="@+id/button_filter" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
