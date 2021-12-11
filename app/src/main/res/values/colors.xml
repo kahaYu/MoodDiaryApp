@@ -13,5 +13,6 @@
     <color name="strokeColor">@color/fab</color>
     <color name="gray">#505050</color>
     <color name="grayTransp">#80505050</color>
+    <color name="orange">#ff9000</color>
 </resources>
 

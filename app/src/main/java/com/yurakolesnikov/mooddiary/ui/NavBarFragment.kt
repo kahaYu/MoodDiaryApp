@@ -45,6 +45,8 @@ class NavBarFragment : Fragment() {
         }
 
         binding.fragment = this
+        binding.lifecycleOwner = this
+        binding.vm = vm
 
         vm.getAllNotes().observe(viewLifecycleOwner, Observer { notes ->
             if (notes.size > 0) {

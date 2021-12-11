@@ -49,6 +49,7 @@
             android:layout_marginBottom="20dp"
             app:layout_constraintBottom_toBottomOf="parent"
             android:onClick="@{() -> vm.sortTrigger()}"
+            android:checked="@{vm.sortTriggerNoLiveData}"
             />
 
         <com.yurakolesnikov.mooddiary.ui.MyCheckBox
