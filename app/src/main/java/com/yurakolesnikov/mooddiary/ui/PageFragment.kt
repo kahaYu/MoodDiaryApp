@@ -40,11 +40,7 @@ class PageFragment(private val notesToBeInflated: List<Note>) : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        for (note in notesToBeInflated) {
-            inflateNote(note) // Inflating notes needed.
-        }
-
-
+        inflateNotes(notesToBeInflated)
 
     }
 
@@ -118,6 +114,12 @@ class PageFragment(private val notesToBeInflated: List<Note>) : Fragment() {
     override fun onResume() {
         super.onResume()
 
+    }
+
+    fun inflateNotes(notesToBeInflated: List<Note>) {
+        for (note in notesToBeInflated) {
+            inflateNote(note) // Inflating notes needed.
+        }
     }
 
     companion object {

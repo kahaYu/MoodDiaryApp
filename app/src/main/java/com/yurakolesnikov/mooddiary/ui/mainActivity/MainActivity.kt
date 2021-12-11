@@ -32,6 +32,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var viewPagerAdapter: ViewPagerAdapter
     private lateinit var viewPager: ViewPager2
+    private lateinit var notesNoLiveData: List<Note>
 
     var isFirstLaunch = true
 
@@ -61,20 +62,8 @@ class MainActivity : AppCompatActivity() {
 
         // Prepopulation.
         vm.getAllNotes().observe(this, Observer { notes ->
-
-            //if (notes.size > 18) vm.deleteFirstSixNotes()
-
-            val numberOfPagesNeeded = (notes.size.toDouble() / 6).roundToNextInt()
-            if (notes.size > 0) NOTE_ID = notes.last().id + 1
-            if (isFirstLaunch && numberOfPagesNeeded > 0) { // If pages is 0, no need to create.
-                val notesToBeInflatedChunked = notes.chunked(6) // Divide by 6 items parts.
-                for (page in 1..numberOfPagesNeeded) {
-                    val notesToBeInflated = notesToBeInflatedChunked[page - 1]
-                    createPage(notesToBeInflated) // When page is created it knows what to inflate.
-                }
-                isFirstLaunch = false
-                viewPager.currentItem = 0
-            }
+            notesNoLiveData = notes
+            prepopulate(notes)
         })
 
         // Create page, when current is full.
@@ -110,6 +99,18 @@ class MainActivity : AppCompatActivity() {
             isFirstLaunch = false
         })
 
+        // Sort
+        vm.sortTrigger.observe(this, Observer { isChecked ->
+            if (!vm.pages.isEmpty()) {
+                if (isChecked) {
+                    removeAllNotesFromTheScreen(vm)
+                } else {
+                    isFirstLaunch = true
+                    inflateNotes(notesNoLiveData)
+                }
+            }
+        })
+
     }
 
     override fun onStop() {
@@ -121,7 +122,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun deletePage () {
+    private fun deletePage() {
         vm.deleteFirstSixNotes()
         vm.pages.removeAt(0)
         viewPagerAdapter.notifyItemRemoved(0)
@@ -142,10 +143,43 @@ class MainActivity : AppCompatActivity() {
         return (notesNumber.toDouble() / 6).roundToNextInt()
     }
 
+    private fun removeAllNotesFromTheScreen(vm: MainActivityViewModel) {
+        for (page in vm.pages) {
+            page.binding.item1.removeAllViews()
+            page.binding.item2.removeAllViews()
+            page.binding.item3.removeAllViews()
+            page.binding.item4.removeAllViews()
+            page.binding.item5.removeAllViews()
+            page.binding.item6.removeAllViews()
+        }
+    }
+
+    private fun prepopulate(notes: List<Note>) {
+        val numberOfPagesNeeded = (notes.size.toDouble() / 6).roundToNextInt()
+        if (notes.size > 0) NOTE_ID = notes.last().id + 1
+        if (isFirstLaunch && numberOfPagesNeeded > 0) { // If pages is 0, no need to create.
+            val notesToBeInflatedChunked = notes.chunked(6) // Divide by 6 items parts.
+            for (page in 1..numberOfPagesNeeded) {
+                val notesToBeInflated = notesToBeInflatedChunked[page - 1]
+                createPage(notesToBeInflated) // When page is created it knows what to inflate.
+            }
+            isFirstLaunch = false
+            viewPager.currentItem = 0
+        }
+    }
+
+    private fun inflateNotes(notes: List<Note>) {
+        val notesToBeInflatedChunked = notes.chunked(6)
+        for (page in vm.pages) {
+            val notesToBeInflated = notesToBeInflatedChunked[vm.pages.indexOf(page)]
+            page.inflateNotes(notesToBeInflated)
+            }
+        }
 
     companion object {
         var NOTE_ID = 0
     }
+
 }
 
 

@@ -52,8 +52,4 @@ class SortFragment : DialogFragment() {
         binding.vm = vm
     }
 
-    fun onApplyPressed() {
-
-    }
-
 }

@@ -48,6 +48,7 @@
             android:buttonTint="@color/fab"
             android:layout_marginBottom="20dp"
             app:layout_constraintBottom_toBottomOf="parent"
+            android:onClick="@{() -> vm.sortTrigger()}"
             />
 
         <com.yurakolesnikov.mooddiary.ui.MyCheckBox
@@ -61,7 +62,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:checked="false"
             android:button="@null"
-            android:layout_marginStart="20dp" />
+            android:layout_marginStart="20dp"
+            />
 
 
 

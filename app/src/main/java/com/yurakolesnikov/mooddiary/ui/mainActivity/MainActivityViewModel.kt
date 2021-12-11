@@ -1,6 +1,7 @@
 package com.yurakolesnikov.mooddiary.ui.mainActivity
 
 import android.graphics.drawable.Drawable
+import androidx.databinding.ObservableField
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -51,10 +52,19 @@ class MainActivityViewModel @Inject constructor(
         previewImage.value = image
     }
 
+    fun sortTrigger() {
+        sortTrigger.value = !sortTriggerNoLiveData
+        sortTriggerNoLiveData = !sortTriggerNoLiveData
+    }
+
+
     var insertNoteTrigger = MutableLiveData<Note>()
     var updateNoteTrigger = MutableLiveData<Note>()
     var createPageTrigger = MutableLiveData<Note>()
     var deleteAllNotesTrigger = MutableLiveData<Boolean>()
+    var sortTrigger = MutableLiveData<Boolean>()
+    var sortTriggerNoLiveData = false
+
 
     var itemViewBinding: ItemViewBinding? = null
     var pageFromWhereTapped: Int? = null
