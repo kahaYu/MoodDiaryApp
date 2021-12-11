@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="fragment"
+            type="com.yurakolesnikov.mooddiary.ui.SortFragment" />
+
+        <variable
+            name="vm"
+            type="com.yurakolesnikov.mooddiary.ui.mainActivity.MainActivityViewModel" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/dialog_fragment_background"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_sort"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="20dp"
+            android:text="@string/sort"
+            android:textColor="@color/fab"
+            android:textSize="@dimen/text_main"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/cb_sortByMood"
+            app:layout_constraintTop_toBottomOf="@id/tv_sort"
+            android:text="@string/by_mood"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="30dp"
+            android:textColor="@color/fab"
+            android:buttonTint="@color/fab"
+            android:layout_marginBottom="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+
+        <com.yurakolesnikov.mooddiary.ui.MyCheckBox
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:id="@+id/button_arrow"
+            app:layout_constraintStart_toEndOf="@id/cb_sortByMood"
+            app:layout_constraintTop_toTopOf="@id/cb_sortByMood"
+            app:layout_constraintBottom_toBottomOf="@id/cb_sortByMood"
+            android:layout_marginEnd="30dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:checked="false"
+            android:button="@null"
+            android:layout_marginStart="20dp" />
+
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

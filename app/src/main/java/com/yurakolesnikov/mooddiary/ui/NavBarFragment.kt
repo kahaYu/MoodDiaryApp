@@ -69,7 +69,7 @@ class NavBarFragment : Fragment() {
     }
 
     fun onSortPressed () {
-        // TO DO
+        SortFragment().show(parentFragmentManager, "Sort fragment")
     }
 
     fun onFilterPressed () {
