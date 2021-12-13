@@ -57,6 +57,13 @@ class MainActivityViewModel @Inject constructor(
         sortTriggerNoLiveData = !sortTriggerNoLiveData
     }
 
+    fun changeOrder() {
+        sortOrder = if (sortOrder == ASC) DSC else ASC
+        if (sortTriggerNoLiveData) {
+            sortTrigger.value = true
+        }
+    }
+
 
     var insertNoteTrigger = MutableLiveData<Note>()
     var updateNoteTrigger = MutableLiveData<Note>()
@@ -64,6 +71,7 @@ class MainActivityViewModel @Inject constructor(
     var deleteAllNotesTrigger = MutableLiveData<Boolean>()
     var sortTrigger = MutableLiveData<Boolean>()
     var sortTriggerNoLiveData = false
+    var sortOrder = ASC
 
 
     var itemViewBinding: ItemViewBinding? = null
@@ -75,5 +83,10 @@ class MainActivityViewModel @Inject constructor(
     var isChecked = false
     var isAlwaysYes = false
     var isAlwaysNo = false
+
+    companion object {
+        var ASC = 1
+        var DSC = -1
+    }
 
 }

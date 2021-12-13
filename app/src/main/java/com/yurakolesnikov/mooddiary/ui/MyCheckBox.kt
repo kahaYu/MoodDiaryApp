@@ -13,9 +13,9 @@ class MyCheckBox(context: Context, attrs: AttributeSet?) :
 
     override fun setChecked(t: Boolean) {
         if (t) {
-            background = resources.getDrawable(com.yurakolesnikov.mooddiary.R.drawable.arrow_down)
+            background = resources.getDrawable(com.yurakolesnikov.mooddiary.R.drawable.arrow_down1)
         } else {
-            background = resources.getDrawable(com.yurakolesnikov.mooddiary.R.drawable.arrow_up)
+            background = resources.getDrawable(com.yurakolesnikov.mooddiary.R.drawable.arrow_up1)
         }
         super.setChecked(t)
     }

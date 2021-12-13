@@ -1,16 +1,11 @@
 package com.yurakolesnikov.mooddiary.ui.mainActivity
 
-import android.R
 import android.content.Context
 import android.content.SharedPreferences
-import android.opengl.Visibility
 import android.os.Bundle
 import android.util.Log
-import android.view.*
-import android.view.View.GONE
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.viewpager2.widget.ViewPager2
 import com.yurakolesnikov.mooddiary.adapters.ViewPagerAdapter
@@ -18,6 +13,7 @@ import com.yurakolesnikov.mooddiary.database.model.Note
 import com.yurakolesnikov.mooddiary.databinding.ActivityMainBinding
 import com.yurakolesnikov.mooddiary.sharedViewModels.SharedViewModel
 import com.yurakolesnikov.mooddiary.ui.PageFragment
+import com.yurakolesnikov.mooddiary.ui.mainActivity.MainActivityViewModel.Companion.ASC
 import com.yurakolesnikov.mooddiary.utils.hideSystemUI
 import com.yurakolesnikov.mooddiary.utils.roundToNextInt
 import dagger.hilt.android.AndroidEntryPoint
@@ -33,6 +29,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var viewPagerAdapter: ViewPagerAdapter
     private lateinit var viewPager: ViewPager2
     private lateinit var notesNoLiveData: List<Note>
+    private lateinit var notesAsc: List<Note>
+    private lateinit var notesDsc: List<Note>
 
     var isFirstLaunch = true
 
@@ -63,6 +61,8 @@ class MainActivity : AppCompatActivity() {
         // Prepopulation.
         vm.getAllNotes().observe(this, Observer { notes ->
             notesNoLiveData = notes
+            notesAsc = notes.sortedBy { note -> note.mood }
+            notesDsc = notes.sortedByDescending { note -> note.mood }
             prepopulate(notes)
         })
 
@@ -103,14 +103,18 @@ class MainActivity : AppCompatActivity() {
         vm.sortTrigger.observe(this, Observer { isChecked ->
             if (!vm.pages.isEmpty()) {
                 if (isChecked) {
-                    removeAllNotesFromTheScreen(vm)
+                    removeAllNotesFromScreen(vm)
+                    if (vm.sortOrder == ASC) {
+                        inflateNotes(notesAsc)
+                    } else {
+                        inflateNotes(notesDsc)
+                    }
                 } else {
-                    isFirstLaunch = true
+                    removeAllNotesFromScreen(vm)
                     inflateNotes(notesNoLiveData)
                 }
             }
         })
-
     }
 
     override fun onStop() {
@@ -143,7 +147,7 @@ class MainActivity : AppCompatActivity() {
         return (notesNumber.toDouble() / 6).roundToNextInt()
     }
 
-    private fun removeAllNotesFromTheScreen(vm: MainActivityViewModel) {
+    private fun removeAllNotesFromScreen(vm: MainActivityViewModel) {
         for (page in vm.pages) {
             page.binding.item1.removeAllViews()
             page.binding.item2.removeAllViews()
@@ -173,8 +177,8 @@ class MainActivity : AppCompatActivity() {
         for (page in vm.pages) {
             val notesToBeInflated = notesToBeInflatedChunked[vm.pages.indexOf(page)]
             page.inflateNotes(notesToBeInflated)
-            }
         }
+    }
 
     companion object {
         var NOTE_ID = 0

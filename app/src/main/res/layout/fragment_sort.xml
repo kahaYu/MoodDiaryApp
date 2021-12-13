@@ -53,8 +53,8 @@
             />
 
         <com.yurakolesnikov.mooddiary.ui.MyCheckBox
-            android:layout_width="18dp"
-            android:layout_height="18dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:id="@+id/button_arrow"
             app:layout_constraintStart_toEndOf="@id/cb_sortByMood"
             app:layout_constraintTop_toTopOf="@id/cb_sortByMood"
@@ -64,6 +64,7 @@
             android:checked="false"
             android:button="@null"
             android:layout_marginStart="20dp"
+            android:onClick="@{() -> vm.changeOrder()}"
             />
 
 

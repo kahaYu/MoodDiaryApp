@@ -17,6 +17,7 @@ import com.yurakolesnikov.mooddiary.databinding.FragmentAddNoteBinding
 import com.yurakolesnikov.mooddiary.databinding.FragmentSortBinding
 import com.yurakolesnikov.mooddiary.ui.mainActivity.MainActivity
 import com.yurakolesnikov.mooddiary.ui.mainActivity.MainActivityViewModel
+import com.yurakolesnikov.mooddiary.ui.mainActivity.MainActivityViewModel.Companion.ASC
 import com.yurakolesnikov.mooddiary.utils.AutoClearedValue
 import com.yurakolesnikov.mooddiary.utils.getCurrentDateTime
 import com.yurakolesnikov.mooddiary.utils.toString
@@ -50,6 +51,8 @@ class SortFragment : DialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.fragment = this
         binding.vm = vm
+
+        binding.buttonArrow.isChecked = if (vm.sortOrder == ASC) false else true
     }
 
 }
