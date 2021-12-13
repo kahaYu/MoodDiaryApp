@@ -64,6 +64,7 @@ class MainActivity : AppCompatActivity() {
             notesAsc = notes.sortedBy { note -> note.mood }
             notesDsc = notes.sortedByDescending { note -> note.mood }
             prepopulate(notes)
+            if (vm.sortTriggerNoLiveData) vm.sortTrigger.value = true
         })
 
         // Create page, when current is full.
@@ -79,6 +80,7 @@ class MainActivity : AppCompatActivity() {
             viewPagerAdapter.notifyDataSetChanged()
             NOTE_ID = 0
             isFirstLaunch = false
+            if (vm.sortTriggerNoLiveData) vm.sortTrigger()
         })
 
         // Insert note.
@@ -90,6 +92,7 @@ class MainActivity : AppCompatActivity() {
                 viewPager.setCurrentItem(vm.pages.lastIndex)
             }
             isFirstLaunch = false
+
 
         })
 
