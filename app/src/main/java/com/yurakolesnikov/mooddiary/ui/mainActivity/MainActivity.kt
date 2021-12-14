@@ -4,10 +4,12 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.snackbar.Snackbar
 import com.yurakolesnikov.mooddiary.adapters.ViewPagerAdapter
 import com.yurakolesnikov.mooddiary.database.model.Note
 import com.yurakolesnikov.mooddiary.databinding.ActivityMainBinding
@@ -79,6 +81,7 @@ class MainActivity : AppCompatActivity() {
                 } else prepopulate(notes)
                 viewPager.setCurrentItem(vm.currentPage ?: vm.pages.lastIndex)
                 vm.isNoteDeletion = false
+                showUndoSnackbar(binding.root)
             }
             if (vm.isFirstLaunch) {
                 prepopulate(notes)
@@ -207,10 +210,21 @@ class MainActivity : AppCompatActivity() {
         viewPagerAdapter.notifyDataSetChanged()
     }
 
+    fun showUndoSnackbar (view: View) {
+        Snackbar.make(view, "Note deleted", Snackbar.LENGTH_LONG)
+            .setAction("Undo", OnClickListener())
+            .show()
+    }
+
     companion object {
         var NOTE_ID = 0
     }
 
+    inner class OnClickListener : View.OnClickListener {
+        override fun onClick(p0: View?) {
+            vm.undoTrigger.value = true
+        }
+    }
 }
 
 

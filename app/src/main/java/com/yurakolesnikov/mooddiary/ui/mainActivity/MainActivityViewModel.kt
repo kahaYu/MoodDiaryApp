@@ -85,6 +85,7 @@ class MainActivityViewModel @Inject constructor(
     var deleteAllNotesTrigger = MutableLiveData<Boolean>()
     var sortTrigger = MutableLiveData<Boolean>()
     var syncPagesIdTrigger = MutableLiveData<Boolean>()
+    var undoTrigger = MutableLiveData<Boolean>()
     var sortTriggerNoLiveData = false
     var sortOrder = ASC
     var currentPage: Int? = null
