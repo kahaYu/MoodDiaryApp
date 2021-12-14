@@ -82,7 +82,7 @@ class MainActivity : AppCompatActivity() {
             }
             if (vm.isFirstLaunch) {
                 prepopulate(notes)
-
+                viewPager.currentItem = 0
             }
             if (vm.isNoteInsert || vm.isNoteUpdate) {
                 if (vm.sortTriggerNoLiveData) vm.sortTrigger.value = true
@@ -171,7 +171,7 @@ class MainActivity : AppCompatActivity() {
         vm.pages.add(PageFragment(notesToBeInflated))
         viewPagerAdapter.notifyItemInserted(vm.pages.lastIndex)
         Log.d("Check", "After: there are ${vm.pages.size} pages")
-        viewPager.setCurrentItem(vm.pages.lastIndex, true)
+        if (!vm.isNoteDeletion) viewPager.setCurrentItem(vm.pages.lastIndex, true)
     }
 
     private fun numberOfPagesNeeded(notesNumber: Int): Int {
@@ -190,7 +190,7 @@ class MainActivity : AppCompatActivity() {
                 createPage(notesToBeInflated) // When page is created it knows what to inflate.
             }
             vm.isFirstLaunch = false
-            viewPager.currentItem = 0
+
         }
     }
 

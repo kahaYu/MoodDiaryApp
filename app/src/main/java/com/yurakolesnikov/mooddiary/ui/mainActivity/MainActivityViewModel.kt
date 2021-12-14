@@ -87,7 +87,7 @@ class MainActivityViewModel @Inject constructor(
     var syncPagesIdTrigger = MutableLiveData<Boolean>()
     var sortTriggerNoLiveData = false
     var sortOrder = ASC
-    var currentPage = 0
+    var currentPage: Int? = null
 
 
     var itemViewBinding: ItemViewBinding? = null
