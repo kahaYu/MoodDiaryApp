@@ -10,6 +10,8 @@ import com.yurakolesnikov.mooddiary.database.model.Note
 import com.yurakolesnikov.mooddiary.databinding.ItemViewBinding
 import com.yurakolesnikov.mooddiary.ui.PageFragment
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -36,10 +38,15 @@ class MainActivityViewModel @Inject constructor(
     }
 
     fun deleteNote(note: Note) {
-        viewModelScope.launch { dao.deleteNote(note) }
+        deletedNote = note
+        viewModelScope.launch {
+            dao.deleteNote(note)
+            eventChannel.send(Event.showUndoDeleteionSnackbar(note))
+        }
         isNoteDeletion = true
         pages.clear()
         syncPagesIdTrigger.value = true
+
     }
 
     fun deleteAllNotes() {
@@ -78,6 +85,12 @@ class MainActivityViewModel @Inject constructor(
         }
     }
 
+    fun undoDeleteNote (note: Note) {
+        viewModelScope.launch {
+            dao.insertNote(note)
+        }
+    }
+
 
     var insertNoteTrigger = MutableLiveData<Note>()
     var updateNoteTrigger = MutableLiveData<Note>()
@@ -89,6 +102,8 @@ class MainActivityViewModel @Inject constructor(
     var sortTriggerNoLiveData = false
     var sortOrder = ASC
     var currentPage: Int? = null
+
+    var deletedNote: Note? = null
 
 
     var itemViewBinding: ItemViewBinding? = null
@@ -104,9 +119,16 @@ class MainActivityViewModel @Inject constructor(
     var isNoteInsert = false
     var isNoteUpdate = false
 
+    private val eventChannel = Channel<Event>()
+    val event = eventChannel.receiveAsFlow()
+
     companion object {
         var ASC = 1
         var DSC = -1
+    }
+
+    sealed class Event {
+        data class showUndoDeleteionSnackbar(val note: Note) : Event()
     }
 
 }

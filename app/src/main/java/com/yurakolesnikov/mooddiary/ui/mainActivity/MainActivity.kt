@@ -7,7 +7,9 @@ import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.snackbar.Snackbar
 import com.yurakolesnikov.mooddiary.adapters.ViewPagerAdapter
@@ -20,6 +22,8 @@ import com.yurakolesnikov.mooddiary.ui.mainActivity.MainActivityViewModel.Compan
 import com.yurakolesnikov.mooddiary.utils.hideSystemUI
 import com.yurakolesnikov.mooddiary.utils.roundToNextInt
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.flow.collect
 import me.relex.circleindicator.CircleIndicator3
 
 
@@ -81,7 +85,7 @@ class MainActivity : AppCompatActivity() {
                 } else prepopulate(notes)
                 viewPager.setCurrentItem(vm.currentPage ?: vm.pages.lastIndex)
                 vm.isNoteDeletion = false
-                showUndoSnackbar(binding.root)
+
             }
             if (vm.isFirstLaunch) {
                 prepopulate(notes)
@@ -149,6 +153,28 @@ class MainActivity : AppCompatActivity() {
         vm.syncPagesIdTrigger.observe(this, Observer { state ->
             syncPagesId()
         })
+
+        // Undo deletion
+        vm.undoTrigger.observe(this, Observer {
+            var listWithReturnedDeletedItem = mutableListOf<Note>()
+            for (note in notesNoLiveData) {
+                if ((vm.deletedNote!!.id - note.id) == 1) {
+                    listWithReturnedDeletedItem.add(note)
+                    listWithReturnedDeletedItem.add(vm.deletedNote!!)
+                }
+
+            }
+        })
+
+        lifecycleScope.launchWhenStarted {
+            vm.event.collect { event ->
+                when (event) {
+                    is MainActivityViewModel.Event.showUndoDeleteionSnackbar -> {
+                        showUndoSnackbar(binding.root, event)
+                    }
+                }
+            }
+        }
     }
 
     override fun onStop() {
@@ -210,9 +236,9 @@ class MainActivity : AppCompatActivity() {
         viewPagerAdapter.notifyDataSetChanged()
     }
 
-    fun showUndoSnackbar (view: View) {
+    fun showUndoSnackbar (view: View, event: MainActivityViewModel.Event.showUndoDeleteionSnackbar) {
         Snackbar.make(view, "Note deleted", Snackbar.LENGTH_LONG)
-            .setAction("Undo", OnClickListener())
+            .setAction("Undo", OnClickListener(event))
             .show()
     }
 
@@ -220,9 +246,10 @@ class MainActivity : AppCompatActivity() {
         var NOTE_ID = 0
     }
 
-    inner class OnClickListener : View.OnClickListener {
+    inner class OnClickListener (val event: MainActivityViewModel.Event.showUndoDeleteionSnackbar) :
+        View.OnClickListener {
         override fun onClick(p0: View?) {
-            vm.undoTrigger.value = true
+            vm.undoDeleteNote(event.note)
         }
     }
 }
