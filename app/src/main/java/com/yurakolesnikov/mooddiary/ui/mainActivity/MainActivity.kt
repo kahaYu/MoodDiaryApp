@@ -14,6 +14,7 @@ import com.yurakolesnikov.mooddiary.databinding.ActivityMainBinding
 import com.yurakolesnikov.mooddiary.sharedViewModels.SharedViewModel
 import com.yurakolesnikov.mooddiary.ui.PageFragment
 import com.yurakolesnikov.mooddiary.ui.mainActivity.MainActivityViewModel.Companion.ASC
+import com.yurakolesnikov.mooddiary.ui.mainActivity.MainActivityViewModel.Companion.DSC
 import com.yurakolesnikov.mooddiary.utils.hideSystemUI
 import com.yurakolesnikov.mooddiary.utils.roundToNextInt
 import dagger.hilt.android.AndroidEntryPoint
@@ -31,8 +32,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var notesNoLiveData: List<Note>
     private lateinit var notesAsc: List<Note>
     private lateinit var notesDsc: List<Note>
-
-    var isFirstLaunch = true
 
     private lateinit var sharedPref: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
@@ -58,28 +57,52 @@ class MainActivity : AppCompatActivity() {
         vm.isAlwaysYes = sharedPref.getBoolean("isAlwaysYes", false)
         vm.isAlwaysNo = sharedPref.getBoolean("isAlwaysNo", false)
 
+        val pageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                vm.currentPage = position
+            }
+        }
+
+        viewPager.registerOnPageChangeCallback(pageChangeCallback)
+
         // Prepopulation.
         vm.getAllNotes().observe(this, Observer { notes ->
             notesNoLiveData = notes
             notesAsc = notes.sortedBy { note -> note.mood }
             notesDsc = notes.sortedByDescending { note -> note.mood }
-            prepopulate(notes)
-            if (vm.sortTriggerNoLiveData) vm.sortTrigger.value = true
+            if (vm.isNoteDeletion) {
+                if (vm.sortTriggerNoLiveData) {
+                    when (vm.sortOrder) {
+                        ASC ->  prepopulate(notesAsc)
+                        DSC ->  prepopulate(notesDsc)
+                    }
+                } else prepopulate(notes)
+                viewPager.setCurrentItem(vm.currentPage ?: vm.pages.lastIndex)
+                vm.isNoteDeletion = false
+            }
+            if (vm.isFirstLaunch) {
+                prepopulate(notes)
+
+            }
+            if (vm.isNoteInsert || vm.isNoteUpdate) {
+                if (vm.sortTriggerNoLiveData) vm.sortTrigger.value = true
+                vm.isNoteInsert = false
+                vm.isNoteUpdate = false
+            }
         })
 
         // Create page, when current is full.
         vm.createPageTrigger.observe(this, Observer { note ->
             val notesToBeInflated = listOf(note)
             createPage(notesToBeInflated)
-            isFirstLaunch = false
+            vm.isFirstLaunch = false
         })
 
         // Delete all notes.
         vm.deleteAllNotesTrigger.observe(this, Observer {
-            viewPagerAdapter.pageIds = viewPagerAdapter.pages.map { it.hashCode().toLong() }
-            viewPagerAdapter.notifyDataSetChanged()
+            syncPagesId()
             NOTE_ID = 0
-            isFirstLaunch = false
+            vm.isFirstLaunch = false
             if (vm.sortTriggerNoLiveData) vm.sortTrigger()
         })
 
@@ -91,7 +114,7 @@ class MainActivity : AppCompatActivity() {
                 vm.pages.last().inflateNote(note)
                 viewPager.setCurrentItem(vm.pages.lastIndex)
             }
-            isFirstLaunch = false
+            vm.isFirstLaunch = false
 
 
         })
@@ -99,24 +122,29 @@ class MainActivity : AppCompatActivity() {
         // Update note.
         vm.updateNoteTrigger.observe(this, Observer { note ->
             vm.pages[vm.pageFromWhereTapped!!].updateNote(vm.itemViewBinding!!, note.mood)
-            isFirstLaunch = false
+            vm.isFirstLaunch = false
         })
 
         // Sort
         vm.sortTrigger.observe(this, Observer { isChecked ->
             if (!vm.pages.isEmpty()) {
                 if (isChecked) {
-                    removeAllNotesFromScreen(vm)
+                    vm.removeAllNotesFromScreens()
                     if (vm.sortOrder == ASC) {
                         inflateNotes(notesAsc)
                     } else {
                         inflateNotes(notesDsc)
                     }
                 } else {
-                    removeAllNotesFromScreen(vm)
+                    vm.removeAllNotesFromScreens()
                     inflateNotes(notesNoLiveData)
                 }
             }
+        })
+
+        // Synchronizing pages id after note deletion.
+        vm.syncPagesIdTrigger.observe(this, Observer { state ->
+            syncPagesId()
         })
     }
 
@@ -150,27 +178,18 @@ class MainActivity : AppCompatActivity() {
         return (notesNumber.toDouble() / 6).roundToNextInt()
     }
 
-    private fun removeAllNotesFromScreen(vm: MainActivityViewModel) {
-        for (page in vm.pages) {
-            page.binding.item1.removeAllViews()
-            page.binding.item2.removeAllViews()
-            page.binding.item3.removeAllViews()
-            page.binding.item4.removeAllViews()
-            page.binding.item5.removeAllViews()
-            page.binding.item6.removeAllViews()
-        }
-    }
+
 
     private fun prepopulate(notes: List<Note>) {
         val numberOfPagesNeeded = (notes.size.toDouble() / 6).roundToNextInt()
         if (notes.size > 0) NOTE_ID = notes.last().id + 1
-        if (isFirstLaunch && numberOfPagesNeeded > 0) { // If pages is 0, no need to create.
+        if (numberOfPagesNeeded > 0) { // If pages is 0, no need to create.
             val notesToBeInflatedChunked = notes.chunked(6) // Divide by 6 items parts.
             for (page in 1..numberOfPagesNeeded) {
                 val notesToBeInflated = notesToBeInflatedChunked[page - 1]
                 createPage(notesToBeInflated) // When page is created it knows what to inflate.
             }
-            isFirstLaunch = false
+            vm.isFirstLaunch = false
             viewPager.currentItem = 0
         }
     }
@@ -181,6 +200,11 @@ class MainActivity : AppCompatActivity() {
             val notesToBeInflated = notesToBeInflatedChunked[vm.pages.indexOf(page)]
             page.inflateNotes(notesToBeInflated)
         }
+    }
+
+    fun syncPagesId () {
+        viewPagerAdapter.pageIds = viewPagerAdapter.pages.map { it.hashCode().toLong() }
+        viewPagerAdapter.notifyDataSetChanged()
     }
 
     companion object {

@@ -111,9 +111,13 @@ class PageFragment(private val notesToBeInflated: List<Note>) : Fragment() {
         vm.pageFromWhereTapped = vm.pages.indexOf(page)
     }
 
-    override fun onResume() {
-        super.onResume()
-
+    fun removeAllNotes () {
+        binding.item1.removeAllViews()
+        binding.item2.removeAllViews()
+        binding.item3.removeAllViews()
+        binding.item4.removeAllViews()
+        binding.item5.removeAllViews()
+        binding.item6.removeAllViews()
     }
 
     fun inflateNotes(notesToBeInflated: List<Note>) {

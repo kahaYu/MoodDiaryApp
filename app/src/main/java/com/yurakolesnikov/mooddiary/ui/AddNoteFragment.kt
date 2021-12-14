@@ -57,9 +57,12 @@ class AddNoteFragment(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val isAddDialog = note == null
         binding.fragment = this
         binding.vm = vm
         binding.lifecycleOwner = this
+        binding.isAddDialog = isAddDialog
 
         var image: Drawable = resources.getDrawable(R.drawable.emoji_1_3)
         if (note == null) {
@@ -78,6 +81,7 @@ class AddNoteFragment(
 
         binding.autoCompleteTextView.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
             @SuppressLint("UseCompatLoadingForDrawables")
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 val image: Drawable = when {
@@ -88,6 +92,7 @@ class AddNoteFragment(
                 }
                 vm.setPreviewImage(image)
             }
+
             override fun afterTextChanged(p0: Editable?) {}
         })
     }
@@ -106,6 +111,12 @@ class AddNoteFragment(
         parentFragmentManager.beginTransaction().remove(this).commit()
     }
 
+    fun onDeleteNotePressed() {
+        if (note != null) {
+            vm.deleteNote(note)
+            parentFragmentManager.beginTransaction().remove(this).commit()
+        }
+    }
 
 
 }

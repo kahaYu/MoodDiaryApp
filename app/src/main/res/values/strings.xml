@@ -9,6 +9,7 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="by_mood">by mood</string>
+    <string name="delete_note">Delete note</string>
     <string-array name="numbers">
         <item>1</item>
         <item>2</item>

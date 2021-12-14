@@ -20,23 +20,31 @@ class MainActivityViewModel @Inject constructor(
 
     val pages = mutableListOf<PageFragment>()
 
+    var isFirstLaunch = true
+
     fun insertNote(note: Note) {
         viewModelScope.launch { dao.insertNote(note) }
+        isNoteInsert = true
         insertNoteTrigger.value = note
 
     }
 
     fun updateNote(note: Note) {
         viewModelScope.launch { dao.updateNote(note) }
+        isNoteUpdate = true
         updateNoteTrigger.value = note
     }
 
     fun deleteNote(note: Note) {
         viewModelScope.launch { dao.deleteNote(note) }
+        isNoteDeletion = true
+        pages.clear()
+        syncPagesIdTrigger.value = true
     }
 
     fun deleteAllNotes() {
         viewModelScope.launch { dao.deleteAllNotes() }
+
         pages.clear()
         deleteAllNotesTrigger.value = true
 
@@ -64,14 +72,22 @@ class MainActivityViewModel @Inject constructor(
         }
     }
 
+    fun removeAllNotesFromScreens () {
+        for (page in pages) {
+            page.removeAllNotes()
+        }
+    }
+
 
     var insertNoteTrigger = MutableLiveData<Note>()
     var updateNoteTrigger = MutableLiveData<Note>()
     var createPageTrigger = MutableLiveData<Note>()
     var deleteAllNotesTrigger = MutableLiveData<Boolean>()
     var sortTrigger = MutableLiveData<Boolean>()
+    var syncPagesIdTrigger = MutableLiveData<Boolean>()
     var sortTriggerNoLiveData = false
     var sortOrder = ASC
+    var currentPage = 0
 
 
     var itemViewBinding: ItemViewBinding? = null
@@ -83,6 +99,9 @@ class MainActivityViewModel @Inject constructor(
     var isChecked = false
     var isAlwaysYes = false
     var isAlwaysNo = false
+    var isNoteDeletion = false
+    var isNoteInsert = false
+    var isNoteUpdate = false
 
     companion object {
         var ASC = 1
