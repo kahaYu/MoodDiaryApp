@@ -79,13 +79,16 @@ class MainActivityViewModel @Inject constructor(
         }
     }
 
-    fun removeAllNotesFromScreens () {
+    fun removeAllNotesFromScreens() {
         for (page in pages) {
             page.removeAllNotes()
         }
     }
 
-    fun undoDeleteNote (note: Note) {
+    fun undoDeleteNote(note: Note) {
+        isUndoDeletion = true
+        pages.clear()
+        syncPagesIdTrigger.value = true
         viewModelScope.launch {
             dao.insertNote(note)
         }
@@ -118,6 +121,7 @@ class MainActivityViewModel @Inject constructor(
     var isNoteDeletion = false
     var isNoteInsert = false
     var isNoteUpdate = false
+    var isUndoDeletion = false
 
     private val eventChannel = Channel<Event>()
     val event = eventChannel.receiveAsFlow()

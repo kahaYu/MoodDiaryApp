@@ -63,28 +63,29 @@ class MainActivity : AppCompatActivity() {
         vm.isAlwaysYes = sharedPref.getBoolean("isAlwaysYes", false)
         vm.isAlwaysNo = sharedPref.getBoolean("isAlwaysNo", false)
 
-        val pageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                vm.currentPage = position
-            }
-        }
+        //val pageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
+        //    override fun onPageSelected(position: Int) {
+        //        if (vm.isNoteDeletion == false) vm.currentPage = position
+        //    }
+        //}
 
-        viewPager.registerOnPageChangeCallback(pageChangeCallback)
+        //viewPager.registerOnPageChangeCallback(pageChangeCallback)
 
         // Prepopulation.
         vm.getAllNotes().observe(this, Observer { notes ->
             notesNoLiveData = notes
             notesAsc = notes.sortedBy { note -> note.mood }
             notesDsc = notes.sortedByDescending { note -> note.mood }
-            if (vm.isNoteDeletion) {
+            if (vm.isNoteDeletion || vm.isUndoDeletion) {
                 if (vm.sortTriggerNoLiveData) {
                     when (vm.sortOrder) {
                         ASC ->  prepopulate(notesAsc)
                         DSC ->  prepopulate(notesDsc)
                     }
                 } else prepopulate(notes)
-                viewPager.setCurrentItem(vm.currentPage ?: vm.pages.lastIndex)
+                viewPager.setCurrentItem(vm.pageFromWhereTapped!!)
                 vm.isNoteDeletion = false
+                vm.isUndoDeletion = false
 
             }
             if (vm.isFirstLaunch) {
@@ -155,16 +156,17 @@ class MainActivity : AppCompatActivity() {
         })
 
         // Undo deletion
-        vm.undoTrigger.observe(this, Observer {
-            var listWithReturnedDeletedItem = mutableListOf<Note>()
-            for (note in notesNoLiveData) {
-                if ((vm.deletedNote!!.id - note.id) == 1) {
-                    listWithReturnedDeletedItem.add(note)
-                    listWithReturnedDeletedItem.add(vm.deletedNote!!)
-                }
+            //vm.undoTrigger.observe(this, Observer {
+        //    var listWithReturnedDeletedItem = mutableListOf<Note>()
+                //    for (note in notesNoLiveData) {
+        //        if ((vm.deletedNote!!.id - note.id) == 1) {
+        //            listWithReturnedDeletedItem.add(note)
+                            //            listWithReturnedDeletedItem.add(vm.deletedNote!!)
+                            //        }
+                        //
+                        //    }
+                //})
 
-            }
-        })
 
         lifecycleScope.launchWhenStarted {
             vm.event.collect { event ->
@@ -200,7 +202,9 @@ class MainActivity : AppCompatActivity() {
         vm.pages.add(PageFragment(notesToBeInflated))
         viewPagerAdapter.notifyItemInserted(vm.pages.lastIndex)
         Log.d("Check", "After: there are ${vm.pages.size} pages")
-        if (!vm.isNoteDeletion) viewPager.setCurrentItem(vm.pages.lastIndex, true)
+        if (!vm.isNoteDeletion && !vm.isUndoDeletion) {
+            viewPager.setCurrentItem(vm.pages.lastIndex, true)
+        }
     }
 
     private fun numberOfPagesNeeded(notesNumber: Int): Int {
