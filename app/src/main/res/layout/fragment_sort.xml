@@ -18,7 +18,8 @@
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:background="@drawable/dialog_fragment_background"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:id="@+id/fragment_sort">
 
         <TextView
             android:id="@+id/tv_sort"
@@ -52,7 +53,7 @@
             android:checked="@{vm.sortTriggerNoLiveData}"
             />
 
-        <com.yurakolesnikov.mooddiary.ui.MyCheckBox
+        <com.yurakolesnikov.mooddiary.ui.ArrowCheckBox
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:id="@+id/button_arrow"

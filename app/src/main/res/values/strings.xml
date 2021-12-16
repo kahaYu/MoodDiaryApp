@@ -10,6 +10,9 @@
     <string name="no">No</string>
     <string name="by_mood">by mood</string>
     <string name="delete_note">Delete note</string>
+    <string name="filter_tv">Show notes with mood</string>
+    <string name="less_than">less than</string>
+    <string name="more_than">more than</string>
     <string-array name="numbers">
         <item>1</item>
         <item>2</item>

@@ -75,7 +75,7 @@ class NavBarFragment : Fragment() {
     }
 
     fun onFilterPressed () {
-        // TO DO
+        FilterFragment().show(parentFragmentManager, "Sort fragment")
     }
 
 }

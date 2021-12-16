@@ -104,6 +104,7 @@ class MainActivityViewModel @Inject constructor(
     var undoTrigger = MutableLiveData<Boolean>()
     var sortTriggerNoLiveData = false
     var sortOrder = ASC
+    var filterOrder = MORE
     var currentPage: Int? = null
 
     var deletedNote: Note? = null
@@ -129,6 +130,9 @@ class MainActivityViewModel @Inject constructor(
     companion object {
         var ASC = 1
         var DSC = -1
+
+        var MORE = 1
+        var LESS = 1
     }
 
     sealed class Event {
