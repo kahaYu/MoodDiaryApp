@@ -145,7 +145,7 @@ class MainActivityViewModel @Inject constructor(
         var DSC = -1
 
         var MORE = 1
-        var LESS = 1
+        var LESS = -1
     }
 
     sealed class Event {
