@@ -56,6 +56,7 @@ class FilterFragment : DialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.fragment = this
         binding.vm = vm
+        binding.lifecycleOwner = this
 
         binding.buttonMoreLess.isChecked = if (vm.filterOrder == MORE) false else true
     }

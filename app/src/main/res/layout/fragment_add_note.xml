@@ -64,11 +64,13 @@
 
             <AutoCompleteTextView
                 android:id="@+id/autoCompleteTextView"
-                android:layout_width="wrap_content"
+                android:layout_width="85dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:inputType="none"
                 android:paddingVertical="0dp"
+                android:paddingStart="15dp"
+                android:paddingEnd="0dp"
                 android:text="1" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -112,7 +114,7 @@
         <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
             android:id="@+id/delete_note_button"
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
+            android:layout_height="50dp"
             android:layout_marginBottom="20dp"
             android:backgroundTint="@color/white"
             android:drawablePadding="10dp"

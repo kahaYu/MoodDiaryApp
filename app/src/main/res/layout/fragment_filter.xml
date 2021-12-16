@@ -12,6 +12,8 @@
             name="vm"
             type="com.yurakolesnikov.mooddiary.ui.mainActivity.MainActivityViewModel" />
 
+        <import type="android.view.View"/>
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -38,12 +40,12 @@
 
         <com.yurakolesnikov.mooddiary.ui.OvalCheckBox
             android:id="@+id/button_more_less"
-            android:layout_width="144dp"
-            android:layout_height="48dp"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
             android:layout_marginTop="15dp"
             android:button="@null"
             android:checked="false"
-            android:onClick="@{}"
+            android:onClick="@{() -> vm.changeFilterOrder()}"
             app:layout_constraintBottom_toTopOf="@id/dd_mood"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -64,22 +66,103 @@
             app:boxStrokeColor="@color/color_selector"
             app:boxStrokeWidth="4dp"
             app:boxStrokeWidthFocused="4dp"
+            app:layout_constraintBottom_toTopOf="@id/placeholder"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/button_more_less"
-            android:layout_marginBottom="20dp"
-            app:layout_constraintBottom_toBottomOf="parent">
+            app:layout_constraintTop_toBottomOf="@+id/button_more_less">
 
             <AutoCompleteTextView
                 android:id="@+id/autoCompleteTextView"
-                android:layout_width="wrap_content"
+                android:layout_width="85dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:inputType="none"
                 android:paddingVertical="0dp"
+                android:paddingStart="15dp"
+                android:paddingLeft="0dp"
+                android:paddingEnd="0dp"
+                android:paddingRight="0dp"
                 android:text="1" />
 
         </com.google.android.material.textfield.TextInputLayout>
+
+
+
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/apply_button"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginBottom="20dp"
+            android:backgroundTint="@color/icon"
+            android:drawablePadding="10dp"
+            android:shadowColor="@color/icon"
+            android:text="@string/apply"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:onClick="@{() -> vm.filterTrigger()}"
+            android:visibility="@{vm.filterTrigger ? View.GONE : View.VISIBLE}"
+            android:textSize="14dp"
+            android:textStyle="bold"
+            app:icon="@drawable/ic_check_mark"
+            app:iconSize="@dimen/icon"
+            app:iconTint="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/dd_mood" />
+
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/reset_button"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginBottom="20dp"
+            android:backgroundTint="@color/white"
+            android:drawablePadding="10dp"
+            android:paddingEnd="0dp"
+            android:shadowColor="@color/icon"
+            android:shadowRadius="0.1"
+            android:text="@string/reset_filter"
+            android:textAllCaps="false"
+            android:textColor="@color/red"
+            android:textSize="14dp"
+            android:textStyle="normal"
+            android:onClick="@{() -> vm.filterTrigger()}"
+            android:visibility="@{vm.filterTrigger ? View.VISIBLE : View.GONE}"
+            app:icon="@drawable/ic_delete_all"
+            app:iconSize="@dimen/icon_small"
+            app:iconTint="@color/red"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/dd_mood" />
+
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/placeholder"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginBottom="20dp"
+            android:backgroundTint="@color/white"
+            android:drawablePadding="10dp"
+            android:paddingEnd="0dp"
+            android:shadowColor="@color/icon"
+            android:shadowRadius="0.1"
+            android:text="@string/reset_filter"
+            android:textAllCaps="false"
+            android:textColor="@color/red"
+            android:textSize="14dp"
+            android:textStyle="normal"
+            android:enabled="false"
+            android:visibility="invisible"
+            app:icon="@drawable/ic_delete_all"
+            app:iconSize="@dimen/icon_small"
+            app:iconTint="@color/red"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/dd_mood" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -65,7 +65,7 @@
             android:checked="false"
             android:button="@null"
             android:layout_marginStart="20dp"
-            android:onClick="@{() -> vm.changeOrder()}"
+            android:onClick="@{() -> vm.changeSortOrder()}"
             />
 
 

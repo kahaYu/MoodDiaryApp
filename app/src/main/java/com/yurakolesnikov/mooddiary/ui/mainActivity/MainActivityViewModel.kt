@@ -1,7 +1,6 @@
 package com.yurakolesnikov.mooddiary.ui.mainActivity
 
 import android.graphics.drawable.Drawable
-import androidx.databinding.ObservableField
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -72,11 +71,23 @@ class MainActivityViewModel @Inject constructor(
         sortTriggerNoLiveData = !sortTriggerNoLiveData
     }
 
-    fun changeOrder() {
+    fun changeSortOrder() {
         sortOrder = if (sortOrder == ASC) DSC else ASC
         if (sortTriggerNoLiveData) {
             sortTrigger.value = true
         }
+    }
+
+    fun changeFilterOrder() {
+        filterOrder = if (filterOrder == MORE) LESS else MORE
+        if (filterTriggerNoLivedata) {
+            filterTrigger.value = true
+        }
+    }
+
+    fun filterTrigger() {
+        filterTrigger.value = !filterTriggerNoLivedata
+        filterTriggerNoLivedata = !filterTriggerNoLivedata
     }
 
     fun removeAllNotesFromScreens() {
@@ -114,6 +125,8 @@ class MainActivityViewModel @Inject constructor(
     var pageFromWhereTapped: Int? = null
 
     var previewImage = MutableLiveData<Drawable>()
+    var filterTrigger = MutableLiveData<Boolean>()
+    var filterTriggerNoLivedata = false
     var isVisible = MutableLiveData<Boolean>()
 
     var isChecked = false
