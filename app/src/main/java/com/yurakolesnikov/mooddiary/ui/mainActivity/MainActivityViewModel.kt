@@ -80,14 +80,14 @@ class MainActivityViewModel @Inject constructor(
 
     fun changeFilterOrder() {
         filterOrder = if (filterOrder == MORE) LESS else MORE
-        if (filterTriggerNoLivedata) {
+        if (filterTriggerNoLiveData) {
             filterTrigger.value = true
         }
     }
 
     fun filterTrigger() {
-        filterTrigger.value = !filterTriggerNoLivedata
-        filterTriggerNoLivedata = !filterTriggerNoLivedata
+        filterTrigger.value = !filterTriggerNoLiveData
+        filterTriggerNoLiveData = !filterTriggerNoLiveData
     }
 
     fun removeAllNotesFromScreens() {
@@ -116,6 +116,7 @@ class MainActivityViewModel @Inject constructor(
     var sortTriggerNoLiveData = false
     var sortOrder = ASC
     var filterOrder = MORE
+    var threshold = 1
     var currentPage: Int? = null
 
     var deletedNote: Note? = null
@@ -126,7 +127,7 @@ class MainActivityViewModel @Inject constructor(
 
     var previewImage = MutableLiveData<Drawable>()
     var filterTrigger = MutableLiveData<Boolean>()
-    var filterTriggerNoLivedata = false
+    var filterTriggerNoLiveData = false
     var isVisible = MutableLiveData<Boolean>()
 
     var isChecked = false

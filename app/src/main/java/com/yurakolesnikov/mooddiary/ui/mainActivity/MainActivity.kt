@@ -7,7 +7,6 @@ import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
@@ -19,13 +18,16 @@ import com.yurakolesnikov.mooddiary.sharedViewModels.SharedViewModel
 import com.yurakolesnikov.mooddiary.ui.PageFragment
 import com.yurakolesnikov.mooddiary.ui.mainActivity.MainActivityViewModel.Companion.ASC
 import com.yurakolesnikov.mooddiary.ui.mainActivity.MainActivityViewModel.Companion.DSC
+import com.yurakolesnikov.mooddiary.ui.mainActivity.MainActivityViewModel.Companion.LESS
 import com.yurakolesnikov.mooddiary.utils.hideSystemUI
 import com.yurakolesnikov.mooddiary.utils.roundToNextInt
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import me.relex.circleindicator.CircleIndicator3
 
+// При добавлении 19-го элемента при включенном фильтре - крэш.
+// Нужно переписывать pageFromWhereTapped во ВьюМодели каждый раз, когда меняется страница. А не
+// только, когда мы тыкаем в айтем, как это сейчас.
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -74,8 +76,11 @@ class MainActivity : AppCompatActivity() {
         // Prepopulation.
         vm.getAllNotes().observe(this, Observer { notes ->
             notesNoLiveData = notes
+
             notesAsc = notes.sortedBy { note -> note.mood }
             notesDsc = notes.sortedByDescending { note -> note.mood }
+
+
             if (vm.isNoteDeletion || vm.isUndoDeletion) {
                 if (vm.sortTriggerNoLiveData) {
                     when (vm.sortOrder) {
@@ -94,6 +99,7 @@ class MainActivity : AppCompatActivity() {
             }
             if (vm.isNoteInsert || vm.isNoteUpdate) {
                 if (vm.sortTriggerNoLiveData) vm.sortTrigger.value = true
+                if (vm.filterTriggerNoLiveData) vm.filterTrigger.value = true
                 vm.isNoteInsert = false
                 vm.isNoteUpdate = false
             }
@@ -150,24 +156,35 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
+        // Filter
+        vm.filterTrigger.observe(this, Observer { isChecked ->
+            if (!vm.pages.isEmpty()) {
+                if (isChecked) {
+                    vm.pages.clear()
+                    syncPagesId()
+                    if (vm.filterOrder == LESS) {
+                        val notesFiltered = notesNoLiveData.filter { it.mood <= vm.threshold }
+                        prepopulate(notesFiltered)
+                    } else {
+                        val notesFiltered = notesNoLiveData.filter { it.mood >= vm.threshold }
+                        prepopulate(notesFiltered)
+                    }
+                } else {
+                    vm.pages.clear()
+                    syncPagesId()
+                    prepopulate(notesNoLiveData)
+                }
+                viewPager.setCurrentItem(vm.pageFromWhereTapped ?: vm.pages.lastIndex)
+            }
+
+        })
+
         // Synchronizing pages id after note deletion.
         vm.syncPagesIdTrigger.observe(this, Observer { state ->
             syncPagesId()
         })
 
-        // Undo deletion
-            //vm.undoTrigger.observe(this, Observer {
-        //    var listWithReturnedDeletedItem = mutableListOf<Note>()
-                //    for (note in notesNoLiveData) {
-        //        if ((vm.deletedNote!!.id - note.id) == 1) {
-        //            listWithReturnedDeletedItem.add(note)
-                            //            listWithReturnedDeletedItem.add(vm.deletedNote!!)
-                            //        }
-                        //
-                        //    }
-                //})
-
-
+        // Show undo snackbar
         lifecycleScope.launchWhenStarted {
             vm.event.collect { event ->
                 when (event) {
@@ -197,7 +214,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun createPage(notesToBeInflated: List<Note>) {
 
-        if (vm.pages.size == 3) deletePage()
+        if (notesNoLiveData.size == 18) deletePage()
 
         vm.pages.add(PageFragment(notesToBeInflated))
         viewPagerAdapter.notifyItemInserted(vm.pages.lastIndex)
@@ -215,7 +232,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun prepopulate(notes: List<Note>) {
         val numberOfPagesNeeded = (notes.size.toDouble() / 6).roundToNextInt()
-        if (notes.size > 0) NOTE_ID = notes.last().id + 1
+        if (notes.size > 0) NOTE_ID = notesNoLiveData.last().id + 1
         if (numberOfPagesNeeded > 0) { // If pages is 0, no need to create.
             val notesToBeInflatedChunked = notes.chunked(6) // Divide by 6 items parts.
             for (page in 1..numberOfPagesNeeded) {

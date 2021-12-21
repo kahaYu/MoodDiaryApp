@@ -3,7 +3,6 @@ package com.yurakolesnikov.mooddiary.ui
 import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -12,20 +11,12 @@ import android.widget.ArrayAdapter
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import com.yurakolesnikov.mooddiary.R
-import com.yurakolesnikov.mooddiary.database.model.Note
-import com.yurakolesnikov.mooddiary.databinding.FragmentAddNoteBinding
 import com.yurakolesnikov.mooddiary.databinding.FragmentFilterBinding
-import com.yurakolesnikov.mooddiary.databinding.FragmentSortBinding
-import com.yurakolesnikov.mooddiary.ui.mainActivity.MainActivity
 import com.yurakolesnikov.mooddiary.ui.mainActivity.MainActivityViewModel
-import com.yurakolesnikov.mooddiary.ui.mainActivity.MainActivityViewModel.Companion.ASC
 import com.yurakolesnikov.mooddiary.ui.mainActivity.MainActivityViewModel.Companion.MORE
 import com.yurakolesnikov.mooddiary.utils.AutoClearedValue
-import com.yurakolesnikov.mooddiary.utils.getCurrentDateTime
-import com.yurakolesnikov.mooddiary.utils.toString
 import com.yurakolesnikov.mooddiary.utils.hideSystemUI
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.*
 
 @AndroidEntryPoint
 class FilterFragment : DialogFragment() {
@@ -59,6 +50,19 @@ class FilterFragment : DialogFragment() {
         binding.lifecycleOwner = this
 
         binding.buttonMoreLess.isChecked = if (vm.filterOrder == MORE) false else true
+
+        if (vm.filterTriggerNoLiveData) {
+            binding.autoCompleteTextView.setText(vm.threshold.toString(), false)}
+
+        binding.autoCompleteTextView.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            @SuppressLint("UseCompatLoadingForDrawables")
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                vm.threshold = p0.toString().toInt()
+                if (vm.filterTriggerNoLiveData) vm.filterTrigger.value = true
+            }
+            override fun afterTextChanged(p0: Editable?) {}
+        })
     }
 
 }
