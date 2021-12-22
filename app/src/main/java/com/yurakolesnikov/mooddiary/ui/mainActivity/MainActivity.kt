@@ -26,8 +26,6 @@ import kotlinx.coroutines.flow.collect
 import me.relex.circleindicator.CircleIndicator3
 
 // При добавлении 19-го элемента при включенном фильтре - крэш.
-// Нужно переписывать pageFromWhereTapped во ВьюМодели каждый раз, когда меняется страница. А не
-// только, когда мы тыкаем в айтем, как это сейчас.
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -64,14 +62,6 @@ class MainActivity : AppCompatActivity() {
 
         vm.isAlwaysYes = sharedPref.getBoolean("isAlwaysYes", false)
         vm.isAlwaysNo = sharedPref.getBoolean("isAlwaysNo", false)
-
-        //val pageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
-        //    override fun onPageSelected(position: Int) {
-        //        if (vm.isNoteDeletion == false) vm.currentPage = position
-        //    }
-        //}
-
-        //viewPager.registerOnPageChangeCallback(pageChangeCallback)
 
         // Prepopulation.
         vm.getAllNotes().observe(this, Observer { notes ->
@@ -174,7 +164,8 @@ class MainActivity : AppCompatActivity() {
                     syncPagesId()
                     prepopulate(notesNoLiveData)
                 }
-                viewPager.setCurrentItem(vm.pageFromWhereTapped ?: vm.pages.lastIndex)
+                var x = vm.currentPage
+                viewPager.setCurrentItem(vm.currentPage ?: 0)
             }
 
         })

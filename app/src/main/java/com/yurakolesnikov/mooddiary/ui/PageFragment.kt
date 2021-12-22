@@ -44,6 +44,11 @@ class PageFragment(private val notesToBeInflated: List<Note>) : Fragment() {
 
     }
 
+    override fun onResume() {
+        super.onResume()
+        vm.currentPage = vm.pages.indexOf(this)
+    }
+
     @SuppressLint("UseCompatLoadingForDrawables")
     fun inflateNote(note: Note) {
 
