@@ -24,6 +24,7 @@ class MainActivityViewModel @Inject constructor(
     var isFirstLaunch = true
 
     fun insertNote(note: Note) {
+
         viewModelScope.launch { dao.insertNote(note) }
         isNoteInsert = true
         insertNoteTrigger.value = note

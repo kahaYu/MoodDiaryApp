@@ -64,7 +64,17 @@ class MainActivity : AppCompatActivity() {
         vm.isAlwaysNo = sharedPref.getBoolean("isAlwaysNo", false)
 
         // Prepopulation.
+
         vm.getAllNotes().observe(this, Observer { notes ->
+
+            if (notes.size == 19) {
+                vm.deleteFirstSixNotes()
+                vm.pages.clear()
+                syncPagesId()
+                vm.isNoteDeletion = true
+                return@Observer
+            }
+
             notesNoLiveData = notes
 
             notesAsc = notes.sortedBy { note -> note.mood }
@@ -78,7 +88,7 @@ class MainActivity : AppCompatActivity() {
                         DSC ->  prepopulate(notesDsc)
                     }
                 } else prepopulate(notes)
-                viewPager.setCurrentItem(vm.pageFromWhereTapped!!)
+                viewPager.setCurrentItem(vm.pageFromWhereTapped ?: vm.pages.lastIndex)
                 vm.isNoteDeletion = false
                 vm.isUndoDeletion = false
 
@@ -112,6 +122,10 @@ class MainActivity : AppCompatActivity() {
 
         // Insert note.
         vm.insertNoteTrigger.observe(this, Observer { note ->
+            if (notesNoLiveData.size == 18) {
+                return@Observer
+            }
+
             if (vm.pages.isEmpty()) {
                 vm.createPageTrigger.value = note
             } else {
@@ -164,9 +178,8 @@ class MainActivity : AppCompatActivity() {
                     syncPagesId()
                     prepopulate(notesNoLiveData)
                 }
-                var x = vm.currentPage
                 viewPager.setCurrentItem(vm.currentPage ?: 0)
-            }
+            } else prepopulate(notesNoLiveData)
 
         })
 
@@ -196,16 +209,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun deletePage() {
-        vm.deleteFirstSixNotes()
-        vm.pages.removeAt(0)
-        viewPagerAdapter.notifyItemRemoved(0)
-        viewPager.setCurrentItem(vm.pages.lastIndex, true)
-    }
-
     private fun createPage(notesToBeInflated: List<Note>) {
-
-        if (notesNoLiveData.size == 18) deletePage()
 
         vm.pages.add(PageFragment(notesToBeInflated))
         viewPagerAdapter.notifyItemInserted(vm.pages.lastIndex)
