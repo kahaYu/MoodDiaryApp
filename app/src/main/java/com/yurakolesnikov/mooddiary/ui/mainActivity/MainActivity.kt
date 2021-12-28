@@ -25,7 +25,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import me.relex.circleindicator.CircleIndicator3
 
-// При добавлении 19-го элемента при включенном фильтре - крэш.
+// При добавлении 19-го элемента при включенном фильтре - крэш. <- Проверить это ещё раз.
+// Проверить верно ли работает связка фильтр+сортировка.
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -38,6 +39,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var notesNoLiveData: List<Note>
     private lateinit var notesAsc: List<Note>
     private lateinit var notesDsc: List<Note>
+
 
     private lateinit var sharedPref: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
@@ -118,6 +120,7 @@ class MainActivity : AppCompatActivity() {
             NOTE_ID = 0
             vm.isFirstLaunch = false
             if (vm.sortTriggerNoLiveData) vm.sortTrigger()
+            if (vm.filterTriggerNoLiveData) vm.filterTrigger()
         })
 
         // Insert note.

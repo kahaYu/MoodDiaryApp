@@ -126,6 +126,9 @@ class MainActivityViewModel @Inject constructor(
     var itemViewBinding: ItemViewBinding? = null
     var pageFromWhereTapped: Int? = null
 
+    var isEventCameFromFilter = false
+    var isEventCameFromSort = false
+
     var previewImage = MutableLiveData<Drawable>()
     var filterTrigger = MutableLiveData<Boolean>()
     var filterTriggerNoLiveData = false
