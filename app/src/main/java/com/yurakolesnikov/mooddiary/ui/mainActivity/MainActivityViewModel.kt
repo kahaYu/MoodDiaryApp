@@ -209,8 +209,8 @@ class MainActivityViewModel @Inject constructor(
         if (filterChecked) {
             when (filterOrder) {
                 FilterOrder.MORE -> filterOrderLD.value = FilterOrder.LESS
-                FilterOrder.LESS -> sortOrderLD.value = FilterOrder.MORE
-                FilterOrder.NONE -> sortOrderLD.value = FilterOrder.MORE
+                FilterOrder.LESS -> filterOrderLD.value = FilterOrder.MORE
+                FilterOrder.NONE -> filterOrderLD.value = FilterOrder.MORE
             }
         } else filterOrderLD.value = FilterOrder.NONE
     }
@@ -220,8 +220,8 @@ class MainActivityViewModel @Inject constructor(
         if (filterChecked) {
             when (filterOrder) {
                 FilterOrder.MORE -> filterOrderLD.value = FilterOrder.MORE
-                FilterOrder.LESS -> sortOrderLD.value = FilterOrder.LESS
-                FilterOrder.NONE -> sortOrderLD.value = FilterOrder.MORE
+                FilterOrder.LESS -> filterOrderLD.value = FilterOrder.LESS
+                FilterOrder.NONE -> filterOrderLD.value = FilterOrder.MORE
             }
         } else filterOrderLD.value = FilterOrder.NONE
     }
@@ -243,6 +243,11 @@ class MainActivityViewModel @Inject constructor(
     var pageFromWhereTapped = 0
     var sortChecked = false
     var filterChecked = false
+        set(value) {
+            field = value
+            filterCheckedLD.value = value
+        }
+    var filterCheckedLD = MutableLiveData<Boolean>()
 
     private val eventChannel = Channel<Event>()
     val event = eventChannel.receiveAsFlow()

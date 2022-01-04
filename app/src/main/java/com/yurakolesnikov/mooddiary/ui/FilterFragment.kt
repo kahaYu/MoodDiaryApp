@@ -12,7 +12,9 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import com.yurakolesnikov.mooddiary.R
 import com.yurakolesnikov.mooddiary.databinding.FragmentFilterBinding
+import com.yurakolesnikov.mooddiary.ui.mainActivity.FilterOrder
 import com.yurakolesnikov.mooddiary.ui.mainActivity.MainActivityViewModel
+import com.yurakolesnikov.mooddiary.ui.mainActivity.SortOrder
 import com.yurakolesnikov.mooddiary.utils.AutoClearedValue
 import com.yurakolesnikov.mooddiary.utils.hideSystemUI
 import dagger.hilt.android.AndroidEntryPoint
@@ -47,6 +49,7 @@ class FilterFragment : DialogFragment() {
         binding.fragment = this
         binding.vm = vm
         binding.lifecycleOwner = this
+        binding.buttonMoreLess.isChecked = if (vm.filterOrder == FilterOrder.LESS ) true else false
 
         binding.autoCompleteTextView.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
