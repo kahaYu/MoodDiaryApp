@@ -51,11 +51,15 @@ class FilterFragment : DialogFragment() {
         binding.lifecycleOwner = this
         binding.buttonMoreLess.isChecked = if (vm.filterOrder == FilterOrder.LESS ) true else false
 
+        if (vm.filterChecked) {
+            binding.autoCompleteTextView.setText(vm.threshold.toString(), false)}
+
         binding.autoCompleteTextView.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             @SuppressLint("UseCompatLoadingForDrawables")
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 vm.threshold = p0.toString().toInt()
+                if (vm.filterChecked) vm.changeFilterOrder()
             }
             override fun afterTextChanged(p0: Editable?) {}
         })
