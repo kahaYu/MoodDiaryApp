@@ -45,13 +45,14 @@ object Notes {
             filteredSortedNotes = value
         }
     var filteredSortedNotes = notes
-
-    var sortOrder = SortOrder.NONE
-    var filterOrder = FilterOrder.NONE
+    var sortOrder = SortOrder.ASC
+    var sortChecked = false
+    var filterOrder = FilterOrder.MORE
+    var filterChecked = false
     var threshold = 1
 
     fun sortAndFilter() {
-        if (filterOrder != FilterOrder.NONE) {
+        if (filterChecked) {
             when (filterOrder) {
                 FilterOrder.MORE ->
                     filteredSortedNotes =
@@ -64,7 +65,7 @@ object Notes {
             }
         }
 
-        if (sortOrder != SortOrder.NONE) {
+        if (sortChecked) {
             when (sortOrder) {
                 SortOrder.ASC ->
                     filteredSortedNotes = filteredSortedNotes?.sortedBy { note -> note.mood } as

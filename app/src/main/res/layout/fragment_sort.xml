@@ -49,7 +49,7 @@
             android:textColor="@color/fab"
             android:buttonTint="@color/fab"
             android:layout_marginBottom="20dp"
-            android:onClick="@{() -> vm.changeSortChecked()}"
+            android:onClick="@{() -> vm.changeSortState()}"
             android:checked="@{vm.sortChecked}"
             app:layout_constraintBottom_toBottomOf="parent"
 

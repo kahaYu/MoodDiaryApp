@@ -21,16 +21,20 @@ class MainActivityViewModel @Inject constructor(
 
     var firstLaunch = true
 
-    var sortOrderLD = MutableLiveData(SortOrder.NONE)
-    var filterOrderLD = MutableLiveData(FilterOrder.NONE)
-    var thresholdLD = MutableLiveData(1)
+    var sortOrderLD = MutableLiveData<Int>()
+    var sortOrder = SortOrder.ASC
+    var sortCheckedLD = MutableLiveData<Boolean>()
+    var sortChecked = false
 
-    var sortOrder = SortOrder.NONE
-    var filterOrder = FilterOrder.NONE
+    var filterOrderLD = MutableLiveData<Int>()
+    var filterOrder = FilterOrder.MORE
+    var filterCheckedLD = MutableLiveData<Boolean>()
+    var filterChecked = false
+
+    var thresholdLD = MutableLiveData<Int>()
     var threshold = 1
 
     val pages = mutableListOf<PageFragment>()
-
 
     var notesNoLiveData = mutableListOf<Note>()
 
@@ -38,26 +42,34 @@ class MainActivityViewModel @Inject constructor(
         init {
             addSource(getAllNotes()) { notes ->
                 notesNoLiveData = notes as MutableList<Note>
-                getAllNotesSortedFiltered() // No IF, cause this LD fires the last.
+                getAllNotesSortedFiltered()
             }
             addSource(sortOrderLD) { sortOrderValue ->
                 sortOrder = sortOrderValue
-                if (!firstLaunch) getAllNotesSortedFiltered()
+                getAllNotesSortedFiltered()
+            }
+            addSource(sortCheckedLD) { sortCheckedValue ->
+                sortChecked = sortCheckedValue
+                getAllNotesSortedFiltered()
             }
             addSource(filterOrderLD) { filterOrderValue ->
                 filterOrder = filterOrderValue
-                if (!firstLaunch) getAllNotesSortedFiltered()
+                getAllNotesSortedFiltered()
+            }
+            addSource(filterCheckedLD) { filterCheckedValue ->
+                filterChecked = filterCheckedValue
+                getAllNotesSortedFiltered()
             }
             addSource(thresholdLD) { thresholdValue ->
                 threshold = thresholdValue
-                if (!firstLaunch) getAllNotesSortedFiltered()
+                getAllNotesSortedFiltered()
             }
         }
 
         private fun getAllNotesSortedFiltered() {
             viewModelScope.launch {
                 value = allNotesSortedFiltered(
-                    notesNoLiveData, sortOrder, filterOrder, threshold
+                    notesNoLiveData, sortOrder, sortChecked, filterOrder, filterChecked, threshold
                 )
             }
         }
@@ -84,16 +96,23 @@ class MainActivityViewModel @Inject constructor(
     fun getAllNotes() = dao.getAllNotes()
 
     fun allNotesSortedFiltered(
-        allNotes: MutableList<Note>, sortOrder: Int, filterOrder: Int, threshold: Int
+        allNotes: MutableList<Note>,
+        sortOrder: Int,
+        sortChecked: Boolean,
+        filterOrder: Int,
+        filterChecked: Boolean,
+        threshold: Int
     ): List<Note> {
         Notes.notes = allNotes
         Notes.sortOrder = sortOrder
+        Notes.sortChecked = sortChecked
         Notes.filterOrder = filterOrder
+        Notes.filterChecked = filterChecked
         Notes.threshold = threshold
 
         Notes.sortAndFilter()
 
-        return Notes.filteredSortedNotes!! as List<Note>
+        return Notes.filteredSortedNotes!!
     }
 
     fun deleteFirstSixNotes() {
@@ -189,20 +208,15 @@ class MainActivityViewModel @Inject constructor(
             when (sortOrder) {
                 SortOrder.ASC -> sortOrderLD.value = SortOrder.DSC
                 SortOrder.DSC -> sortOrderLD.value = SortOrder.ASC
-                SortOrder.NONE -> sortOrderLD.value = SortOrder.ASC
             }
-        } else sortOrderLD.value = SortOrder.NONE
+        }
+        else
+            if (sortOrder == SortOrder.ASC) sortOrder = SortOrder.DSC
+            else sortOrder = SortOrder.ASC
     }
 
-    fun changeSortChecked() {
-        sortChecked = !sortChecked
-        if (sortChecked) {
-            when (sortOrder) {
-                SortOrder.ASC -> sortOrderLD.value = SortOrder.ASC
-                SortOrder.DSC -> sortOrderLD.value = SortOrder.DSC
-                SortOrder.NONE -> sortOrderLD.value = SortOrder.ASC
-            }
-        } else sortOrderLD.value = SortOrder.NONE
+    fun changeSortState() {
+        sortCheckedLD.value = !sortChecked
     }
 
     fun changeFilterOrder() {
@@ -210,20 +224,14 @@ class MainActivityViewModel @Inject constructor(
             when (filterOrder) {
                 FilterOrder.MORE -> filterOrderLD.value = FilterOrder.LESS
                 FilterOrder.LESS -> filterOrderLD.value = FilterOrder.MORE
-                FilterOrder.NONE -> filterOrderLD.value = FilterOrder.MORE
             }
-        } else filterOrderLD.value = FilterOrder.NONE
+        } else
+            if (filterOrder == FilterOrder.MORE) filterOrder = FilterOrder.LESS
+            else filterOrder = FilterOrder.MORE
     }
 
-    fun changeFilterChecked() {
-        filterChecked = !filterChecked
-        if (filterChecked) {
-            when (filterOrder) {
-                FilterOrder.MORE -> filterOrderLD.value = FilterOrder.MORE
-                FilterOrder.LESS -> filterOrderLD.value = FilterOrder.LESS
-                FilterOrder.NONE -> filterOrderLD.value = FilterOrder.MORE
-            }
-        } else filterOrderLD.value = FilterOrder.NONE
+    fun changeFilterState() {
+        filterCheckedLD.value = !filterChecked
     }
 
     var currentPage: Int? = null
@@ -241,13 +249,8 @@ class MainActivityViewModel @Inject constructor(
     var isNoteUpdate = false
     var isUndoDeletion = false
     var pageFromWhereTapped = 0
-    var sortChecked = false
-    var filterChecked = false
-        set(value) {
-            field = value
-            filterCheckedLD.value = value
-        }
-    var filterCheckedLD = MutableLiveData<Boolean>()
+
+
 
     private val eventChannel = Channel<Event>()
     val event = eventChannel.receiveAsFlow()
@@ -261,11 +264,9 @@ class MainActivityViewModel @Inject constructor(
 object SortOrder {
     val ASC = 1
     val DSC = -1
-    val NONE = 0
 }
 
 object FilterOrder {
     val MORE = 1
     val LESS = -1
-    val NONE = 0
 }

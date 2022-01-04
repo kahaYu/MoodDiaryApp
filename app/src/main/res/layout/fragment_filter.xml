@@ -109,7 +109,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/dd_mood"
-            android:onClick="@{() -> vm.changeFilterChecked()}"
+            android:onClick="@{() -> vm.changeFilterState()}"
             android:visibility="@{vm.filterCheckedLD ? View.GONE : View.VISIBLE}"/>
 
         <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
@@ -135,7 +135,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/dd_mood"
-            android:onClick="@{() -> vm.changeFilterChecked()}"
+            android:onClick="@{() -> vm.changeFilterState()}"
             android:visibility="@{vm.filterCheckedLD ? View.VISIBLE : View.GONE}"/>
 
         <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
