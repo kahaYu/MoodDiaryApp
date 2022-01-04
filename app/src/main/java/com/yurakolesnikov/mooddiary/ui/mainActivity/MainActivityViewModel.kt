@@ -23,12 +23,12 @@ class MainActivityViewModel @Inject constructor(
 
     var sortOrderLD = MutableLiveData<Int>()
     var sortOrder = SortOrder.ASC
-    var sortCheckedLD = MutableLiveData<Boolean>()
+    var sortCheckedLD = MutableLiveData<Boolean>(false)
     var sortChecked = false
 
     var filterOrderLD = MutableLiveData<Int>()
     var filterOrder = FilterOrder.MORE
-    var filterCheckedLD = MutableLiveData<Boolean>()
+    var filterCheckedLD = MutableLiveData<Boolean>(false)
     var filterChecked = false
 
     var thresholdLD = MutableLiveData<Int>()

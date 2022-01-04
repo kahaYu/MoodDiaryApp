@@ -53,13 +53,16 @@ class FilterFragment : DialogFragment() {
 
         if (vm.filterChecked) {
             binding.autoCompleteTextView.setText(vm.threshold.toString(), false)}
+        else vm.threshold = 1
+
 
         binding.autoCompleteTextView.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             @SuppressLint("UseCompatLoadingForDrawables")
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                vm.threshold = p0.toString().toInt()
-                if (vm.filterChecked) vm.changeFilterOrder()
+                if (vm.filterChecked) vm.thresholdLD.value = p0.toString().toInt()
+                else vm.threshold = p0.toString().toInt()
+
             }
             override fun afterTextChanged(p0: Editable?) {}
         })
