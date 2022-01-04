@@ -45,7 +45,6 @@
             android:layout_marginTop="15dp"
             android:button="@null"
             android:checked="false"
-            android:onClick="@{() -> vm.changeFilterOrder()}"
             app:layout_constraintBottom_toTopOf="@id/dd_mood"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -100,8 +99,6 @@
             android:text="@string/apply"
             android:textAllCaps="false"
             android:textColor="@color/white"
-            android:onClick="@{() -> vm.filterTrigger()}"
-            android:visibility="@{vm.filterTrigger ? View.GONE : View.VISIBLE}"
             android:textSize="14dp"
             android:textStyle="bold"
             app:icon="@drawable/ic_check_mark"
@@ -110,7 +107,9 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/dd_mood" />
+            app:layout_constraintTop_toBottomOf="@id/dd_mood"
+            android:onClick="@{() -> vm.changeFilterChecked()}"
+            android:visibility="@{vm.filterChecked ? View.GONE : View.VISIBLE}"/>
 
         <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
             android:id="@+id/reset_button"
@@ -128,15 +127,15 @@
             android:textColor="@color/red"
             android:textSize="14dp"
             android:textStyle="normal"
-            android:onClick="@{() -> vm.filterTrigger()}"
-            android:visibility="@{vm.filterTrigger ? View.VISIBLE : View.GONE}"
             app:icon="@drawable/ic_delete_all"
             app:iconSize="@dimen/icon_small"
             app:iconTint="@color/red"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/dd_mood" />
+            app:layout_constraintTop_toBottomOf="@id/dd_mood"
+            android:onClick="@{() -> vm.changeFilterChecked()}"
+            android:visibility="@{vm.filterChecked ? View.VISIBLE : View.GONE}"/>
 
         <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
             android:id="@+id/placeholder"
@@ -155,14 +154,14 @@
             android:textSize="14dp"
             android:textStyle="normal"
             android:enabled="false"
-            android:visibility="invisible"
             app:icon="@drawable/ic_delete_all"
             app:iconSize="@dimen/icon_small"
             app:iconTint="@color/red"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/dd_mood" />
+            app:layout_constraintTop_toBottomOf="@id/dd_mood"
+            android:visibility="invisible"/>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

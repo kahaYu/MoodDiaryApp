@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.asLiveData
 import com.yurakolesnikov.mooddiary.database.model.Note
 import com.yurakolesnikov.mooddiary.databinding.FragmentNavBarBinding
 import com.yurakolesnikov.mooddiary.ui.mainActivity.MainActivityViewModel
@@ -75,7 +76,7 @@ class NavBarFragment : Fragment() {
     }
 
     fun onFilterPressed () {
-        FilterFragment().show(parentFragmentManager, "Sort fragment")
+        FilterFragment().show(parentFragmentManager, "Filter fragment")
     }
 
 }

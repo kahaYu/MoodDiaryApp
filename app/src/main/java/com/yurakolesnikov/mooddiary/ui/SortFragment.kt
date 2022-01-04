@@ -17,7 +17,7 @@ import com.yurakolesnikov.mooddiary.databinding.FragmentAddNoteBinding
 import com.yurakolesnikov.mooddiary.databinding.FragmentSortBinding
 import com.yurakolesnikov.mooddiary.ui.mainActivity.MainActivity
 import com.yurakolesnikov.mooddiary.ui.mainActivity.MainActivityViewModel
-import com.yurakolesnikov.mooddiary.ui.mainActivity.MainActivityViewModel.Companion.ASC
+import com.yurakolesnikov.mooddiary.ui.mainActivity.SortOrder
 import com.yurakolesnikov.mooddiary.utils.AutoClearedValue
 import com.yurakolesnikov.mooddiary.utils.getCurrentDateTime
 import com.yurakolesnikov.mooddiary.utils.toString
@@ -39,9 +39,8 @@ class SortFragment : DialogFragment() {
     ): View? {
         binding = FragmentSortBinding.inflate(inflater, container, false)
         dialog?.window?.let {
-            it.requestFeature(Window.FEATURE_NO_TITLE) // Removes title of dialog
-            it.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT)) // Makes bg of dialog
-            // transparent to put own drawable with rounded corners.
+            it.requestFeature(Window.FEATURE_NO_TITLE)
+            it.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         }
         hideSystemUI()
         return binding.root
@@ -51,8 +50,7 @@ class SortFragment : DialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.fragment = this
         binding.vm = vm
-
-        binding.buttonArrow.isChecked = if (vm.sortOrder == ASC) false else true
+        binding.buttonArrow.isChecked = if (vm.sortOrder == SortOrder.DSC ) true else false
     }
 
 }

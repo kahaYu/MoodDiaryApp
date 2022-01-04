@@ -92,7 +92,8 @@ class PageFragment(private val notesToBeInflated: List<Note>) : Fragment() {
             binding.item6.addView(view)
                 }
         else {
-            vm.createPageTrigger.value = note // Create new page when current is full.
+            val _note = listOf(note)
+            vm.createPage(_note) // Create new page when current is full.
         }
     }
 

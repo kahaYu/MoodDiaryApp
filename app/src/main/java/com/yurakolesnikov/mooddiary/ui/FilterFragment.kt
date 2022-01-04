@@ -13,7 +13,6 @@ import androidx.fragment.app.activityViewModels
 import com.yurakolesnikov.mooddiary.R
 import com.yurakolesnikov.mooddiary.databinding.FragmentFilterBinding
 import com.yurakolesnikov.mooddiary.ui.mainActivity.MainActivityViewModel
-import com.yurakolesnikov.mooddiary.ui.mainActivity.MainActivityViewModel.Companion.MORE
 import com.yurakolesnikov.mooddiary.utils.AutoClearedValue
 import com.yurakolesnikov.mooddiary.utils.hideSystemUI
 import dagger.hilt.android.AndroidEntryPoint
@@ -49,17 +48,11 @@ class FilterFragment : DialogFragment() {
         binding.vm = vm
         binding.lifecycleOwner = this
 
-        binding.buttonMoreLess.isChecked = if (vm.filterOrder == MORE) false else true
-
-        if (vm.filterTriggerNoLiveData) {
-            binding.autoCompleteTextView.setText(vm.threshold.toString(), false)}
-
         binding.autoCompleteTextView.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             @SuppressLint("UseCompatLoadingForDrawables")
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 vm.threshold = p0.toString().toInt()
-                if (vm.filterTriggerNoLiveData) vm.filterTrigger.value = true
             }
             override fun afterTextChanged(p0: Editable?) {}
         })

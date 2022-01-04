@@ -13,6 +13,8 @@
             type="com.yurakolesnikov.mooddiary.ui.mainActivity.MainActivityViewModel" />
 
         <import type="android.view.View"/>
+        <import type="com.yurakolesnikov.mooddiary.ui.mainActivity.SortOrder"/>
+        <import type="com.yurakolesnikov.mooddiary.ui.mainActivity.FilterOrder"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -91,7 +93,7 @@
             app:layout_constraintEnd_toEndOf="@id/button_sort"
             android:layout_marginEnd="10dp"
             android:padding="0dp"
-            android:visibility="@{vm.sortTrigger ? View.VISIBLE : View.INVISIBLE}"/>
+            />
 
         <ImageView
             android:layout_width="5dp"
@@ -102,7 +104,7 @@
             android:layout_marginEnd="10dp"
             android:layout_marginTop="15dp"
             android:padding="0dp"
-            android:visibility="@{vm.filterTrigger ? View.VISIBLE : View.INVISIBLE}"/>
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

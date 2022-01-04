@@ -11,6 +11,7 @@
         <variable
             name="vm"
             type="com.yurakolesnikov.mooddiary.ui.mainActivity.MainActivityViewModel" />
+        <import type="com.yurakolesnikov.mooddiary.ui.mainActivity.SortOrder"/>
 
     </data>
 
@@ -48,9 +49,10 @@
             android:textColor="@color/fab"
             android:buttonTint="@color/fab"
             android:layout_marginBottom="20dp"
+            android:onClick="@{() -> vm.changeSortChecked()}"
+            android:checked="@{vm.sortChecked}"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:onClick="@{() -> vm.sortTrigger()}"
-            android:checked="@{vm.sortTriggerNoLiveData}"
+
             />
 
         <com.yurakolesnikov.mooddiary.ui.ArrowCheckBox
