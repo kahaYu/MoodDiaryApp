@@ -86,7 +86,10 @@ class MainActivityViewModel @Inject constructor(
     }
 
     fun deleteNote(note: Note) {
-        viewModelScope.launch { dao.deleteNote(note) }
+        viewModelScope.launch {
+            dao.deleteNote(note)
+            eventChannel.send(Event.showUndoDeleteionSnackbar(note))
+        }
     }
 
     fun deleteAllNotes() {
