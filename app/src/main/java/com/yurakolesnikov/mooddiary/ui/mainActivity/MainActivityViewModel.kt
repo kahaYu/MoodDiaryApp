@@ -78,7 +78,9 @@ class MainActivityViewModel @Inject constructor(
 
     fun insertNote(note: Note) {
         viewModelScope.launch { dao.insertNote(note) }
-        isNoteInsert = true
+        viewModelScope.launch {
+            eventChannel.send(Event.setLastPage())
+        }
     }
 
     fun updateNote(note: Note) {
@@ -153,6 +155,10 @@ class MainActivityViewModel @Inject constructor(
 
     fun createPage(notesToBeInflated: List<Note>) {
         pages.add(PageFragment(notesToBeInflated))
+        viewModelScope.launch {
+            eventChannel.send(Event.syncPagesId())
+            eventChannel.send(Event.setLastPage())
+        }
     }
 
     fun deleteAllPages() {
@@ -198,8 +204,12 @@ class MainActivityViewModel @Inject constructor(
                         pages[page - 1].inflateNotes(notesToBeInflated)
                         numberOfChunkedInterval++
                     }
-                    for (page in (pages.lastIndex + 1 - numberOfPagesNeeded)..pages.lastIndex) {
+                    for (page in pages.lastIndex downTo numberOfPagesNeeded) {
                         pages.removeAt(page)
+                    }
+                    viewModelScope.launch {
+                        eventChannel.send(Event.syncPagesId())
+                        eventChannel.send(Event.setLastPage())
                     }
                 }
             }
@@ -261,6 +271,7 @@ class MainActivityViewModel @Inject constructor(
     sealed class Event {
         data class showUndoDeleteionSnackbar(val note: Note) : Event()
         class syncPagesId : Event()
+        class setLastPage : Event()
     }
 }
 

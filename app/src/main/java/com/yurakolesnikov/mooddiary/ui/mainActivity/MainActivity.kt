@@ -63,7 +63,6 @@ class MainActivity : AppCompatActivity() {
         vm.isAlwaysNo = sharedPref.getBoolean("isAlwaysNo", false)
 
         vm.allNotesSortedFiltered.observe(this, Observer { notes ->
-            syncPagesId()
             when (vm.firstLaunch) {
                 true -> {
                     vm.prepopulate(notes)
@@ -73,8 +72,6 @@ class MainActivity : AppCompatActivity() {
                 false -> {
                     if (notes.size > 0) {
                         vm.cleanAndInflateAgain(notes)
-                        if (vm.isNoteInsert) viewPager.setCurrentItem(vm.pages.lastIndex).also {
-                            vm.isNoteInsert = false }
                     } else {
                         vm.deleteAllPages()
                     }
@@ -136,6 +133,9 @@ class MainActivity : AppCompatActivity() {
                     }
                     is MainActivityViewModel.Event.syncPagesId -> {
                         syncPagesId()
+                    }
+                    is MainActivityViewModel.Event.setLastPage -> {
+                        viewPager.setCurrentItem(vm.pages.lastIndex)
                     }
                 }
             }
