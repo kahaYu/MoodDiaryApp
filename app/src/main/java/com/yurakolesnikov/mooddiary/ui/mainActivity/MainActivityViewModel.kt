@@ -77,8 +77,10 @@ class MainActivityViewModel @Inject constructor(
 
 
     fun insertNote(note: Note) {
-        viewModelScope.launch { dao.insertNote(note) }
         viewModelScope.launch {
+            if (notesNoLiveData.size == 18) deleteFirstSixNotes().also { eventChannel.send(Event
+                .showToastNotesLimit()) }
+            dao.insertNote(note)
             eventChannel.send(Event.setLastPage())
         }
     }
@@ -222,8 +224,7 @@ class MainActivityViewModel @Inject constructor(
                 SortOrder.ASC -> sortOrderLD.value = SortOrder.DSC
                 SortOrder.DSC -> sortOrderLD.value = SortOrder.ASC
             }
-        }
-        else
+        } else
             if (sortOrder == SortOrder.ASC) sortOrder = SortOrder.DSC
             else sortOrder = SortOrder.ASC
     }
@@ -264,7 +265,6 @@ class MainActivityViewModel @Inject constructor(
     var pageFromWhereTapped = 0
 
 
-
     private val eventChannel = Channel<Event>()
     val event = eventChannel.receiveAsFlow()
 
@@ -272,6 +272,7 @@ class MainActivityViewModel @Inject constructor(
         data class showUndoDeleteionSnackbar(val note: Note) : Event()
         class syncPagesId : Event()
         class setLastPage : Event()
+        class showToastNotesLimit : Event()
     }
 }
 

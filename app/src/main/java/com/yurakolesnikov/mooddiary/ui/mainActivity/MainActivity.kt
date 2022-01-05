@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -136,6 +137,11 @@ class MainActivity : AppCompatActivity() {
                     }
                     is MainActivityViewModel.Event.setLastPage -> {
                         viewPager.setCurrentItem(vm.pages.lastIndex)
+                    }
+                    is MainActivityViewModel.Event.showToastNotesLimit -> {
+                        Toast.makeText(applicationContext, "Notes limit is exceed. First 6 notes are " +
+                                "deleted",
+                            Toast.LENGTH_SHORT).show()
                     }
                 }
             }
