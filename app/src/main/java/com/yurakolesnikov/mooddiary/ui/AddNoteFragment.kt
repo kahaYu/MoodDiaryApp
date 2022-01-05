@@ -117,6 +117,4 @@ class AddNoteFragment(
             parentFragmentManager.beginTransaction().remove(this).commit()
         }
     }
-
-
 }
