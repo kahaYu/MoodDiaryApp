@@ -11,7 +11,7 @@
         <variable
             name="vm"
             type="com.yurakolesnikov.mooddiary.ui.mainActivity.MainActivityViewModel" />
-        <import type="com.yurakolesnikov.mooddiary.ui.mainActivity.SortOrder"/>
+        <import type="com.yurakolesnikov.mooddiary.utils.SortOrder"/>
 
     </data>
 

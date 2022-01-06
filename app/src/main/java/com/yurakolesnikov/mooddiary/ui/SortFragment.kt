@@ -17,10 +17,8 @@ import com.yurakolesnikov.mooddiary.databinding.FragmentAddNoteBinding
 import com.yurakolesnikov.mooddiary.databinding.FragmentSortBinding
 import com.yurakolesnikov.mooddiary.ui.mainActivity.MainActivity
 import com.yurakolesnikov.mooddiary.ui.mainActivity.MainActivityViewModel
-import com.yurakolesnikov.mooddiary.ui.mainActivity.SortOrder
 import com.yurakolesnikov.mooddiary.utils.AutoClearedValue
-import com.yurakolesnikov.mooddiary.utils.getCurrentDateTime
-import com.yurakolesnikov.mooddiary.utils.toString
+import com.yurakolesnikov.mooddiary.utils.SortOrder
 import com.yurakolesnikov.mooddiary.utils.hideSystemUI
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*

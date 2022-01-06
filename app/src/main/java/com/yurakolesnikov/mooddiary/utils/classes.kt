@@ -4,8 +4,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.yurakolesnikov.mooddiary.database.model.Note
-import com.yurakolesnikov.mooddiary.ui.mainActivity.FilterOrder
-import com.yurakolesnikov.mooddiary.ui.mainActivity.SortOrder
 import java.util.logging.Filter
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
@@ -77,4 +75,14 @@ object Notes {
             }
         }
     }
+}
+
+object SortOrder {
+    const val ASC = 1
+    const val DSC = -1
+}
+
+object FilterOrder {
+    const val MORE = 1
+    const val LESS = -1
 }

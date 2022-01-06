@@ -1,12 +1,15 @@
 package com.yurakolesnikov.mooddiary.ui.mainActivity
 
+import android.content.SharedPreferences
 import android.graphics.drawable.Drawable
 import androidx.lifecycle.*
 import com.yurakolesnikov.mooddiary.database.Dao
 import com.yurakolesnikov.mooddiary.database.model.Note
 import com.yurakolesnikov.mooddiary.databinding.ItemViewBinding
 import com.yurakolesnikov.mooddiary.ui.PageFragment
+import com.yurakolesnikov.mooddiary.utils.FilterOrder
 import com.yurakolesnikov.mooddiary.utils.Notes
+import com.yurakolesnikov.mooddiary.utils.SortOrder
 import com.yurakolesnikov.mooddiary.utils.roundToNextInt
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -16,10 +19,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
-    private val dao: Dao
+    private val dao: Dao,
+    private val sp: SharedPreferences,
+    val spEditor: SharedPreferences.Editor
 ) : ViewModel() {
 
     var firstLaunch = true
+    var isAlwaysYes = sp.getBoolean("isAlwaysYes", false)
+    var isAlwaysNo = sp.getBoolean("isAlwaysNo", false)
 
     var sortOrderLD = MutableLiveData<Int>()
     var sortOrder = SortOrder.ASC
@@ -256,8 +263,8 @@ class MainActivityViewModel @Inject constructor(
     var isVisible = MutableLiveData<Boolean>()
 
     var isChecked = false
-    var isAlwaysYes = false
-    var isAlwaysNo = false
+
+
     var isNoteDeletion = false
     var isNoteInsert = false
     var isNoteUpdate = false
@@ -276,12 +283,3 @@ class MainActivityViewModel @Inject constructor(
     }
 }
 
-object SortOrder {
-    val ASC = 1
-    val DSC = -1
-}
-
-object FilterOrder {
-    val MORE = 1
-    val LESS = -1
-}
