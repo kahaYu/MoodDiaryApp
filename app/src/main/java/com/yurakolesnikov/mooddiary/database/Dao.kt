@@ -26,5 +26,4 @@ interface Dao {
 
     @Query ("SELECT * FROM Note")
     fun getAllNotes () : LiveData<List<Note>>
-
 }
