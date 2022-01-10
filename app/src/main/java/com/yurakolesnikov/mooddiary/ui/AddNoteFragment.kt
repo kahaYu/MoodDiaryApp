@@ -21,19 +21,21 @@ import com.yurakolesnikov.mooddiary.utils.getCurrentDateTime
 import com.yurakolesnikov.mooddiary.utils.toString
 import com.yurakolesnikov.mooddiary.utils.hideSystemUI
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.*
 
 @AndroidEntryPoint
 class AddNoteFragment(
-    val text: String = "Rate your happiness today",
+    val text: String = "Rate your happiness today", // By default it's adding dialog, not updating
     val note: Note? = null
 ) : DialogFragment() {
 
-    private var binding by AutoClearedValue<FragmentAddNoteBinding>(this)
+    private var binding
+            by AutoClearedValue<FragmentAddNoteBinding>(this) // Delegate to manage lifecycle of binding object
 
-    private val vm: MainActivityViewModel by activityViewModels()
+    private val vm: MainActivityViewModel by activityViewModels() // Obtain the same view model like in activity
 
-    private val mood: Int get() = binding.autoCompleteTextView.text.toString().toInt()
+    private val activity = requireActivity() as MainActivity
+
+    private val mood: Int get() = binding.autoCompleteTextView.text.toString().toInt() // Always up to date mood
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,55 +44,47 @@ class AddNoteFragment(
     ): View? {
         binding = FragmentAddNoteBinding.inflate(inflater, container, false)
         dialog?.window?.let {
-            it.requestFeature(Window.FEATURE_NO_TITLE) // Removes title of dialog
-            it.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT)) // Makes bg of dialog
-            // transparent to put own drawable with rounded corners.
+            it.requestFeature(Window.FEATURE_NO_TITLE) // Remove title of dialog
+            it.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT)) // Make bg of dialog
+            // transparent to put own drawable with rounded corners
         }
         hideSystemUI()
-        // Assign array of int to drop down view.
-        val numbers = resources.getStringArray(R.array.numbers)
+
+        val numbers = resources.getStringArray(R.array.numbers) // Assign array of int to drop down view
         val arrayAdapter = ArrayAdapter(requireContext(), R.layout.dropdowm_item, numbers)
         binding.autoCompleteTextView.setAdapter(arrayAdapter)
-        binding.tvRateYourHappiness.text = text
+
         return binding.root
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val isAddDialog = note == null
-        binding.fragment = this
+        binding.tvRateYourHappiness.text = text
+
         binding.vm = vm
+        binding.fragment = this
         binding.lifecycleOwner = this
-        binding.isAddDialog = isAddDialog
+        binding.isAddDialog = note == null // Property to manage appearance of delete button in XML
 
-        var image: Drawable = resources.getDrawable(R.drawable.emoji_1_3)
-        if (note == null) {
-            binding.autoCompleteTextView.setText("1", false)
-        } else {
-            binding.autoCompleteTextView.setText(note.mood.toString(), false)
-            image = when {
-                note.mood <= 3 -> resources.getDrawable(R.drawable.emoji_1_3)
-                note.mood <= 6 -> resources.getDrawable(R.drawable.emoji_4_6)
-                note.mood <= 9 -> resources.getDrawable(R.drawable.emoji_7_9)
-                else -> resources.getDrawable(R.drawable.emoji_10)
-            }
+        var image: Drawable = resources.getDrawable(R.drawable.emoji_1_3) // Default image when its adding dialog
 
+        if (note == null) binding.autoCompleteTextView.setText("1", false) // Default drop-down number is 1
+        else { // Means it's updating dialog. Have to pull data from clicked note
+            binding.autoCompleteTextView
+                .setText(note.mood.toString(), false) // Set number of drop-down to mood of clicked note
+
+            image = activity.selectImage(note.mood) // Set mini-image depending on mood of clicked note
         }
-        vm.setPreviewImage(image)
 
-        binding.autoCompleteTextView.addTextChangedListener(object : TextWatcher {
+        binding.autoCompleteTextView.addTextChangedListener(object : TextWatcher { // Update mini-image real-time
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
             @SuppressLint("UseCompatLoadingForDrawables")
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                val image: Drawable = when {
-                    p0.toString().toInt() <= 3 -> resources.getDrawable(R.drawable.emoji_1_3)
-                    p0.toString().toInt() <= 6 -> resources.getDrawable(R.drawable.emoji_4_6)
-                    p0.toString().toInt() <= 9 -> resources.getDrawable(R.drawable.emoji_7_9)
-                    else -> resources.getDrawable(R.drawable.emoji_10)
-                }
-                vm.setPreviewImage(image)
+                vm.previewImage.value =
+                    activity.selectImage(p0.toString().toInt()) // Fire live data to update mini-image in XML
             }
 
             override fun afterTextChanged(p0: Editable?) {}
@@ -98,23 +92,23 @@ class AddNoteFragment(
     }
 
     fun onApplyPressed() {
-        val sdf = getCurrentDateTime().toString("dd.MM.yyyy")
-        if (note == null) {
-            val newNote = Note(sdf, mood, MainActivity.NOTE_ID)
+        val currentDate = getCurrentDateTime().toString("dd.MM.yyyy")
+        if (note == null) { // Means its adding dialog
+            val newNote = Note(currentDate, mood, MainActivity.NOTE_ID)
             MainActivity.NOTE_ID++
-            vm.insertNote(newNote)
-        } else {
+            vm.insertNote(newNote) // Add note to database
+        } else { // Means its updating dialog
             note.mood = mood
-            val id = note.id
-            vm.updateNote(note)
+            vm.updateNote(note) // Update existing note in database
         }
-        parentFragmentManager.beginTransaction().remove(this).commit()
+        parentFragmentManager.beginTransaction().remove(this).commit() // Close dialog
     }
 
     fun onDeleteNotePressed() {
-        if (note != null) {
+        if (note != null) { // Means its updating dialog
             vm.deleteNote(note)
             parentFragmentManager.beginTransaction().remove(this).commit()
         }
     }
+
 }

@@ -40,7 +40,9 @@ class SortFragment : DialogFragment() {
             it.requestFeature(Window.FEATURE_NO_TITLE)
             it.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         }
+
         hideSystemUI()
+
         return binding.root
     }
 
@@ -48,7 +50,7 @@ class SortFragment : DialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.fragment = this
         binding.vm = vm
-        binding.buttonArrow.isChecked = if (vm.sortOrder == SortOrder.DSC ) true else false
+        binding.buttonArrow.isChecked = vm.sortOrder == SortOrder.DSC // Recover previous state
     }
 
 }

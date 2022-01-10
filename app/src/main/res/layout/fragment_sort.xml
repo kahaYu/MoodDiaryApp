@@ -11,16 +11,17 @@
         <variable
             name="vm"
             type="com.yurakolesnikov.mooddiary.ui.mainActivity.MainActivityViewModel" />
-        <import type="com.yurakolesnikov.mooddiary.utils.SortOrder"/>
+
+        <import type="com.yurakolesnikov.mooddiary.utils.SortOrder" />
 
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/fragment_sort"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:background="@drawable/dialog_fragment_background"
-        android:orientation="vertical"
-        android:id="@+id/fragment_sort">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/tv_sort"
@@ -35,42 +36,38 @@
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <CheckBox
+            android:id="@+id/cb_sort_by_mood"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/cb_sortByMood"
-            app:layout_constraintTop_toBottomOf="@id/tv_sort"
-            android:text="@string/by_mood"
-            app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="30dp"
-            android:textColor="@color/fab"
-            android:buttonTint="@color/fab"
             android:layout_marginBottom="20dp"
-            android:onClick="@{() -> vm.changeSortState()}"
+            android:buttonTint="@color/fab"
             android:checked="@{vm.sortChecked}"
+            android:onClick="@{() -> vm.changeSortState()}"
+            android:text="@string/by_mood"
+            android:textColor="@color/fab"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_sort"
 
             />
 
-        <com.yurakolesnikov.mooddiary.ui.ArrowCheckBox
+        <com.yurakolesnikov.mooddiary.ui.customUi.ArrowCheckBox
+            android:id="@+id/button_arrow"
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:id="@+id/button_arrow"
-            app:layout_constraintStart_toEndOf="@id/cb_sortByMood"
-            app:layout_constraintTop_toTopOf="@id/cb_sortByMood"
-            app:layout_constraintBottom_toBottomOf="@id/cb_sortByMood"
-            android:layout_marginEnd="30dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:checked="false"
-            android:button="@null"
             android:layout_marginStart="20dp"
+            android:layout_marginEnd="30dp"
+            android:button="@null"
+            android:checked="false"
             android:onClick="@{() -> vm.changeSortOrder()}"
-            />
-
-
+            app:layout_constraintBottom_toBottomOf="@id/cb_sort_by_mood"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/cb_sort_by_mood"
+            app:layout_constraintTop_toTopOf="@id/cb_sort_by_mood" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

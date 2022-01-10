@@ -32,39 +32,43 @@ class FilterFragment : DialogFragment() {
     ): View? {
         binding = FragmentFilterBinding.inflate(inflater, container, false)
         dialog?.window?.let {
-            it.requestFeature(Window.FEATURE_NO_TITLE) // Removes title of dialog
-            it.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT)) // Makes bg of dialog
-            // transparent to put own drawable with rounded corners.
+            it.requestFeature(Window.FEATURE_NO_TITLE)
+            it.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         }
+
         hideSystemUI()
-        val numbers = resources.getStringArray(R.array.numbers)
+
+        val numbers = resources.getStringArray(R.array.numbers) // Assign array of int to drop down view
         val arrayAdapter = ArrayAdapter(requireContext(), R.layout.dropdowm_item, numbers)
         binding.autoCompleteTextView.setAdapter(arrayAdapter)
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         binding.fragment = this
         binding.vm = vm
         binding.lifecycleOwner = this
-        binding.buttonMoreLess.isChecked = if (vm.filterOrder == FilterOrder.LESS ) true else false
+        binding.buttonMoreLess.isChecked = vm.filterOrder == FilterOrder.LESS // Recover previous state
 
-        if (vm.filterChecked) {
-            binding.autoCompleteTextView.setText(vm.threshold.toString(), false)}
-        else vm.threshold = 1
+        if (vm.filterChecked) { // Recover previous state
+            binding.autoCompleteTextView.setText(vm.threshold.toString(), false)
+        } else vm.threshold = 1
 
 
         binding.autoCompleteTextView.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
             @SuppressLint("UseCompatLoadingForDrawables")
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                if (vm.filterChecked) vm.thresholdLD.value = p0.toString().toInt()
-                else vm.threshold = p0.toString().toInt()
+                if (vm.filterChecked) vm.thresholdLd.value = p0.toString().toInt() // Update ui only if filter is on
+                else vm.threshold = p0.toString().toInt() // If filter is off, just save it's threshold in property
 
             }
+
             override fun afterTextChanged(p0: Editable?) {}
         })
     }
-
 }

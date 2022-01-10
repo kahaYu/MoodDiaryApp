@@ -1,4 +1,5 @@
 <resources>
+
     <string name="app_name">MoodDiary</string>
     <string name="delete_all">Delete All</string>
     <string name="sort">Sort</string>
@@ -14,7 +15,9 @@
     <string name="filter_tv">Show notes with mood</string>
     <string name="less_than">less than</string>
     <string name="more_than">more than</string>
+
     <string-array name="numbers">
+
         <item>1</item>
         <item>2</item>
         <item>3</item>
@@ -25,5 +28,7 @@
         <item>8</item>
         <item>9</item>
         <item>10</item>
+
     </string-array>
+
 </resources>

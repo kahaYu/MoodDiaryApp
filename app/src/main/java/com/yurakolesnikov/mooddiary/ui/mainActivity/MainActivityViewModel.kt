@@ -1,8 +1,12 @@
 package com.yurakolesnikov.mooddiary.ui.mainActivity
 
+import android.app.Application
+import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.drawable.Drawable
+import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.lifecycle.*
+import com.yurakolesnikov.mooddiary.R
 import com.yurakolesnikov.mooddiary.database.Dao
 import com.yurakolesnikov.mooddiary.database.model.Note
 import com.yurakolesnikov.mooddiary.databinding.ItemViewBinding
@@ -12,6 +16,7 @@ import com.yurakolesnikov.mooddiary.utils.Notes
 import com.yurakolesnikov.mooddiary.utils.SortOrder
 import com.yurakolesnikov.mooddiary.utils.roundToNextInt
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -24,71 +29,84 @@ class MainActivityViewModel @Inject constructor(
     val spEditor: SharedPreferences.Editor
 ) : ViewModel() {
 
-    var firstLaunch = true
-    var isAlwaysYes = sp.getBoolean("isAlwaysYes", false)
+    var firstLaunch = true // Indicates if app's just been launched
+
+    var isAlwaysYes = sp.getBoolean("isAlwaysYes", false) // Settings of confirmation dialog
     var isAlwaysNo = sp.getBoolean("isAlwaysNo", false)
+    var dontAskAgainChecked = false // Checkbox to remember chosen option
+    
+    private var sortOrderLd = MutableLiveData<Int>()
+    var sortOrder = SortOrder.ASC // Default state of sorting order
+    var sortCheckedLd = MutableLiveData<Boolean>(false) // Not private cause is called from XML
+    var sortChecked = false // By default sorting is off
 
-    var sortOrderLD = MutableLiveData<Int>()
-    var sortOrder = SortOrder.ASC
-    var sortCheckedLD = MutableLiveData<Boolean>(false)
-    var sortChecked = false
+    private var filterOrderLd = MutableLiveData<Int>()
+    var filterOrder = FilterOrder.MORE // Default state of filtering direction
+    var filterCheckedLd = MutableLiveData<Boolean>(false) // Not private cause is called from XML
+    var filterChecked = false // By default filtering is off
 
-    var filterOrderLD = MutableLiveData<Int>()
-    var filterOrder = FilterOrder.MORE
-    var filterCheckedLD = MutableLiveData<Boolean>(false)
-    var filterChecked = false
+    var thresholdLd = MutableLiveData<Int>() // Threshold for filtering
+    var threshold = 1 // Default state of threshold
 
-    var thresholdLD = MutableLiveData<Int>()
-    var threshold = 1
+    val pages = mutableListOf<PageFragment>() // Default empty list of pages for viewPager
 
-    val pages = mutableListOf<PageFragment>()
+    var notesNoLd = mutableListOf<Note>() // Property to keep list of all notes after each change
 
-    var notesNoLiveData = mutableListOf<Note>()
+    var previewImage = MutableLiveData<Drawable>() // Mini-image to show in add note dialog. Observed in XML
 
-    val allNotesSortedFiltered = object : MediatorLiveData<List<Note>>() {
-        init {
+    private val eventChannel = Channel<Event>()
+    val event = eventChannel.receiveAsFlow()
+    sealed class Event { // Kinds of single-life events for ui
+        data class ShowUndoDeletionSnackbar(val note: Note) : Event()
+        object SyncPagesId : Event()
+        object SetLastPage : Event()
+        object ShowToastNotesLimit : Event()
+    }
+
+    val allNotesSortedFiltered = object : MediatorLiveData<List<Note>>() { // Notes for ui
+
+        init { // Sources to combine in one live data to be observed from main activity
             addSource(getAllNotes()) { notes ->
-                notesNoLiveData = notes as MutableList<Note>
+                notesNoLd = notes as MutableList<Note>
                 getAllNotesSortedFiltered()
             }
-            addSource(sortOrderLD) { sortOrderValue ->
+            addSource(sortOrderLd) { sortOrderValue ->
                 sortOrder = sortOrderValue
                 getAllNotesSortedFiltered()
             }
-            addSource(sortCheckedLD) { sortCheckedValue ->
+            addSource(sortCheckedLd) { sortCheckedValue ->
                 sortChecked = sortCheckedValue
                 getAllNotesSortedFiltered()
             }
-            addSource(filterOrderLD) { filterOrderValue ->
+            addSource(filterOrderLd) { filterOrderValue ->
                 filterOrder = filterOrderValue
                 getAllNotesSortedFiltered()
             }
-            addSource(filterCheckedLD) { filterCheckedValue ->
+            addSource(filterCheckedLd) { filterCheckedValue ->
                 filterChecked = filterCheckedValue
                 getAllNotesSortedFiltered()
             }
-            addSource(thresholdLD) { thresholdValue ->
+            addSource(thresholdLd) { thresholdValue ->
                 threshold = thresholdValue
                 getAllNotesSortedFiltered()
             }
         }
 
-        private fun getAllNotesSortedFiltered() {
+        private fun getAllNotesSortedFiltered() { // Emit prepared for ui list of notes as value of mediator live data
             viewModelScope.launch {
                 value = allNotesSortedFiltered(
-                    notesNoLiveData, sortOrder, sortChecked, filterOrder, filterChecked, threshold
+                    notesNoLd, sortOrder, sortChecked, filterOrder, filterChecked, threshold
                 )
             }
         }
     }
 
-
     fun insertNote(note: Note) {
-        viewModelScope.launch {
-            if (notesNoLiveData.size == 18) deleteFirstSixNotes().also { eventChannel.send(Event
-                .showToastNotesLimit()) }
+        viewModelScope.launch { // 3 pages are max in viewPager. If 19th note is added, first page of notes is deleted
+            if (notesNoLd.size == 18) deleteFirstSixNotes()
+                .also { eventChannel.send(Event.ShowToastNotesLimit) } // And user gets notification
             dao.insertNote(note)
-            eventChannel.send(Event.setLastPage())
+            eventChannel.send(Event.SetLastPage) // Always move to last page when new note is added
         }
     }
 
@@ -99,47 +117,7 @@ class MainActivityViewModel @Inject constructor(
     fun deleteNote(note: Note) {
         viewModelScope.launch {
             dao.deleteNote(note)
-            eventChannel.send(Event.showUndoDeleteionSnackbar(note))
-        }
-    }
-
-    fun deleteAllNotes() {
-        viewModelScope.launch { dao.deleteAllNotes() }
-    }
-
-    fun getAllNotes() = dao.getAllNotes()
-
-    fun allNotesSortedFiltered(
-        allNotes: MutableList<Note>,
-        sortOrder: Int,
-        sortChecked: Boolean,
-        filterOrder: Int,
-        filterChecked: Boolean,
-        threshold: Int
-    ): List<Note> {
-        Notes.notes = allNotes
-        Notes.sortOrder = sortOrder
-        Notes.sortChecked = sortChecked
-        Notes.filterOrder = filterOrder
-        Notes.filterChecked = filterChecked
-        Notes.threshold = threshold
-
-        Notes.sortAndFilter()
-
-        return Notes.filteredSortedNotes!!
-    }
-
-    fun deleteFirstSixNotes() {
-        viewModelScope.launch { dao.deleteFirstSixNotes() }
-    }
-
-    fun setPreviewImage(image: Drawable) {
-        previewImage.value = image
-    }
-
-    fun removeAllNotesFromScreens() {
-        for (page in pages) {
-            page.removeAllNotes()
+            eventChannel.send(Event.ShowUndoDeletionSnackbar(note)) // User could undo deletion
         }
     }
 
@@ -149,42 +127,70 @@ class MainActivityViewModel @Inject constructor(
         }
     }
 
-    fun prepopulate(notes: List<Note>) {
-        val numberOfPagesNeeded = (notes.size.toDouble() / 6).roundToNextInt()
-        if (notes.size > 0) MainActivity.NOTE_ID = notesNoLiveData.last().id + 1
-        if (numberOfPagesNeeded > 0) { // If pages is 0, no need to create.
-            val notesToBeInflatedChunked = notes.chunked(6) // Divide by 6 items parts.
+    fun deleteFirstSixNotes() {
+        viewModelScope.launch { dao.deleteFirstSixNotes() }
+    } // When first page has to be deleted
+
+    fun deleteAllNotes() {
+        viewModelScope.launch { dao.deleteAllNotes() }
+    }
+
+    private fun getAllNotes() = dao.getAllNotes() // Private, cause is used only by mediator live data of view model
+
+    private fun allNotesSortedFiltered( // Filter and sort notes for ui
+        allNotes: MutableList<Note>,
+        sortOrder: Int,
+        sortChecked: Boolean,
+        filterOrder: Int,
+        filterChecked: Boolean,
+        threshold: Int
+    ): List<Note> {
+        Notes.notes = allNotes // Input data to Notes object
+        Notes.sortOrder = sortOrder
+        Notes.sortChecked = sortChecked
+        Notes.filterOrder = filterOrder
+        Notes.filterChecked = filterChecked
+        Notes.threshold = threshold
+
+        Notes.sortAndFilter() // Notes object processes provided data
+
+        return Notes.filteredSortedNotes ?: listOf<Note>()
+    }
+
+    fun prepopulate(notes: List<Note>) { // Recover previous state of ui
+        val numberOfPagesNeeded = (notes.size.toDouble() / 6).roundToNextInt() // How many pages are needed
+        if (notes.isNotEmpty()) MainActivity.NOTE_ID = notesNoLd.last().id + 1 // New note will receive next id
+        if (numberOfPagesNeeded > 0) { // If pages needed are 0, no need to create pages
+            val notesToBeInflatedChunked = notes.chunked(6) // Divide notes by 6 items parts
             for (page in 1..numberOfPagesNeeded) {
-                val notesToBeInflated = notesToBeInflatedChunked[page - 1]
-                createPage(notesToBeInflated) // When page is created it knows what to inflate.
+                val notesToBeInflated = notesToBeInflatedChunked[page - 1] // Notes to provide to page constructor
+                createPage(notesToBeInflated) // When page is created it knows what notes to inflate
             }
-            firstLaunch = false
+            firstLaunch = false // From now prepopulation will not be called
         }
     }
 
     fun createPage(notesToBeInflated: List<Note>) {
         pages.add(PageFragment(notesToBeInflated))
         viewModelScope.launch {
-            eventChannel.send(Event.syncPagesId())
-            eventChannel.send(Event.setLastPage())
+            eventChannel.send(Event.SyncPagesId)
+            eventChannel.send(Event.SetLastPage)
         }
     }
 
-    fun deleteAllPages() {
-        pages.clear()
-    }
+    fun cleanAndInflateAgain(notes: List<Note>) { // Erase all notes from screen and inflate updated data
+        viewModelScope.launch { // Launch in coroutine, cause heavy-weight operation
 
-    fun cleanAndInflateAgain(notes: List<Note>) {
-        viewModelScope.launch {
             for (page in pages) {
-                page.removeAllNotes()
+                page.removeAllNotes() // First of all erase all notes from all pages
             }
+
             val numberOfPagesNeeded = (notes.size.toDouble() / 6).roundToNextInt()
             val notesToBeInflatedChunked = notes.chunked(6)
             var numberOfChunkedInterval = 0
 
-            when {
-                numberOfPagesNeeded == pages.size -> {
+            when { // Comparison if new data set requires more or less pages, than were created previously
+                numberOfPagesNeeded == pages.size -> { // No need to delete or add more pages
                     for (page in pages) {
                         val notesToBeInflated =
                             notesToBeInflatedChunked[numberOfChunkedInterval]
@@ -192,33 +198,33 @@ class MainActivityViewModel @Inject constructor(
                         numberOfChunkedInterval++
                     }
                 }
-                numberOfPagesNeeded > pages.size -> {
+                numberOfPagesNeeded > pages.size -> { // Some notes are inflated on existing pages
                     for (page in pages) {
                         val notesToBeInflated =
                             notesToBeInflatedChunked[numberOfChunkedInterval]
                         page.inflateNotes(notesToBeInflated)
                         numberOfChunkedInterval++
                     }
-                    for (page in 1..(numberOfPagesNeeded - pages.size)) {
+                    for (page in 1..(numberOfPagesNeeded - pages.size)) { // The rest of notes require new pages
                         val notesToBeInflated =
                             notesToBeInflatedChunked[numberOfChunkedInterval]
                         createPage(notesToBeInflated)
                         numberOfChunkedInterval++
                     }
                 }
-                numberOfPagesNeeded < pages.size -> {
+                numberOfPagesNeeded < pages.size -> { // Some notes are inflated on existing pages
                     for (page in 1..numberOfPagesNeeded) {
                         val notesToBeInflated =
                             notesToBeInflatedChunked[numberOfChunkedInterval]
                         pages[page - 1].inflateNotes(notesToBeInflated)
                         numberOfChunkedInterval++
                     }
-                    for (page in pages.lastIndex downTo numberOfPagesNeeded) {
+                    for (page in pages.lastIndex downTo numberOfPagesNeeded) { // Empty pages has to be deleted
                         pages.removeAt(page)
                     }
                     viewModelScope.launch {
-                        eventChannel.send(Event.syncPagesId())
-                        eventChannel.send(Event.setLastPage())
+                        eventChannel.send(Event.SyncPagesId)
+                        eventChannel.send(Event.SetLastPage)
                     }
                 }
             }
@@ -228,58 +234,36 @@ class MainActivityViewModel @Inject constructor(
     fun changeSortOrder() {
         if (sortChecked) {
             when (sortOrder) {
-                SortOrder.ASC -> sortOrderLD.value = SortOrder.DSC
-                SortOrder.DSC -> sortOrderLD.value = SortOrder.ASC
+                SortOrder.ASC -> sortOrderLd.value = SortOrder.DSC // Fire live data with opposite value
+                SortOrder.DSC -> sortOrderLd.value = SortOrder.ASC
             }
         } else
-            if (sortOrder == SortOrder.ASC) sortOrder = SortOrder.DSC
-            else sortOrder = SortOrder.ASC
+            when (sortOrder) {
+                SortOrder.ASC -> sortOrder = SortOrder.DSC // Change property to opposite value
+                SortOrder.DSC -> sortOrder = SortOrder.ASC
+            }
     }
 
     fun changeSortState() {
-        sortCheckedLD.value = !sortChecked
+        sortCheckedLd.value = !sortChecked
     }
 
     fun changeFilterOrder() {
         if (filterChecked) {
             when (filterOrder) {
-                FilterOrder.MORE -> filterOrderLD.value = FilterOrder.LESS
-                FilterOrder.LESS -> filterOrderLD.value = FilterOrder.MORE
+                FilterOrder.MORE -> filterOrderLd.value = FilterOrder.LESS // Fire live data with opposite value
+                FilterOrder.LESS -> filterOrderLd.value = FilterOrder.MORE
             }
         } else
-            if (filterOrder == FilterOrder.MORE) filterOrder = FilterOrder.LESS
-            else filterOrder = FilterOrder.MORE
+            when (filterOrder) {
+                FilterOrder.MORE -> filterOrder = FilterOrder.LESS // Change property to opposite value
+                FilterOrder.LESS -> filterOrder = FilterOrder.MORE
+            }
     }
 
     fun changeFilterState() {
-        filterCheckedLD.value = !filterChecked
+        filterCheckedLd.value = !filterChecked
     }
 
-    var currentPage: Int? = null
-
-    var itemViewBinding: ItemViewBinding? = null
-
-    var previewImage = MutableLiveData<Drawable>()
-    var isVisible = MutableLiveData<Boolean>()
-
-    var isChecked = false
-
-
-    var isNoteDeletion = false
-    var isNoteInsert = false
-    var isNoteUpdate = false
-    var isUndoDeletion = false
-    var pageFromWhereTapped = 0
-
-
-    private val eventChannel = Channel<Event>()
-    val event = eventChannel.receiveAsFlow()
-
-    sealed class Event {
-        data class showUndoDeleteionSnackbar(val note: Note) : Event()
-        class syncPagesId : Event()
-        class setLastPage : Event()
-        class showToastNotesLimit : Event()
-    }
 }
 

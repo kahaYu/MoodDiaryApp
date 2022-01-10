@@ -21,7 +21,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/tv_areYouSure"
+            android:id="@+id/tv_are_you_sure"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
@@ -37,10 +37,11 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-            android:id="@+id/yes_button"
+            android:id="@+id/button_yes"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginTop="25dp"
+            android:layout_marginEnd="20dp"
             android:layout_marginBottom="5dp"
             android:backgroundTint="@color/gray"
             android:onClick="@{() -> fragment.onYesPressed()}"
@@ -52,18 +53,17 @@
             android:textColor="@color/white"
             android:textSize="14dp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@id/checkBox"
-            app:layout_constraintStart_toEndOf="@id/no_button"
+            app:layout_constraintBottom_toTopOf="@id/checkbox"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_areYouSure"
-            android:layout_marginEnd="20dp"/>
+            app:layout_constraintStart_toEndOf="@id/button_no"
+            app:layout_constraintTop_toBottomOf="@id/tv_are_you_sure" />
 
         <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-            android:id="@+id/no_button"
+            android:id="@+id/button_no"
             android:layout_width="130dp"
             android:layout_height="50dp"
-            android:backgroundTint="@color/icon"
             android:layout_marginStart="20dp"
+            android:backgroundTint="@color/icon"
             android:onClick="@{() -> fragment.onNoPressed()}"
             android:paddingStart="0dp"
             android:paddingEnd="0dp"
@@ -73,23 +73,24 @@
             android:textColor="@color/white"
             android:textSize="14dp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@id/yes_button"
-            app:layout_constraintEnd_toStartOf="@id/yes_button"
+            app:layout_constraintBottom_toBottomOf="@id/button_yes"
+            app:layout_constraintEnd_toStartOf="@id/button_yes"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/yes_button" />
+            app:layout_constraintTop_toTopOf="@id/button_yes" />
 
         <CheckBox
-            android:id="@+id/checkBox"
+            android:id="@+id/checkbox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:buttonTint="@color/fab"
-            android:onClick="@{() -> vm.setChecked(true)}"
+            android:onClick="@{() -> vm.setDontAskAgainChecked(true)}"
             android:text="Do not ask again"
             android:textColor="@color/fab"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/yes_button" />
+            app:layout_constraintTop_toBottomOf="@id/button_yes" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </layout>

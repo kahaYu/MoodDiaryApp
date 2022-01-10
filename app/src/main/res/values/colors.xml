@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-
     <color name="icon">#80D8FF</color>
     <color name="iconTransp">#8080D8FF</color>
     <color name="fab">#31C1FF</color>
@@ -15,5 +14,6 @@
     <color name="grayTransp">#80505050</color>
     <color name="orange">#ff9000</color>
     <color name="red">#B33636</color>
+
 </resources>
 

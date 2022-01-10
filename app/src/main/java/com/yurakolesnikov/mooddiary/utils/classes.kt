@@ -1,5 +1,7 @@
 package com.yurakolesnikov.mooddiary.utils
 
+import android.content.Context
+import android.util.AttributeSet
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
