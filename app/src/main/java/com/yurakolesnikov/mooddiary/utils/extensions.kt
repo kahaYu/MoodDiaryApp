@@ -5,6 +5,8 @@ import android.os.Build
 import android.view.*
 import androidx.fragment.app.DialogFragment
 import com.yurakolesnikov.mooddiary.database.model.Note
+import com.yurakolesnikov.mooddiary.databinding.FragmentFilterBinding
+import com.yurakolesnikov.mooddiary.databinding.FragmentNavBarBinding
 import java.text.SimpleDateFormat
 import java.util.*
 

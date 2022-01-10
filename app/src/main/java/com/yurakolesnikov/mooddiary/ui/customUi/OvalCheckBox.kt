@@ -1,4 +1,4 @@
-package com.yurakolesnikov.mooddiary.ui
+package com.yurakolesnikov.mooddiary.ui.customUi
 
 import android.R
 import android.R.*
@@ -12,14 +12,14 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 
 
-class ArrowCheckBox(context: Context, attrs: AttributeSet?) :
+class OvalCheckBox(context: Context, attrs: AttributeSet?) :
     androidx.appcompat.widget.AppCompatCheckBox(context, attrs) {
 
     override fun setChecked(t: Boolean) {
         if (t) {
-            background = resources.getDrawable(com.yurakolesnikov.mooddiary.R.drawable.arrow_down1)
+            background = resources.getDrawable(com.yurakolesnikov.mooddiary.R.drawable.less_than)
         } else {
-            background = resources.getDrawable(com.yurakolesnikov.mooddiary.R.drawable.arrow_up1)
+            background = resources.getDrawable(com.yurakolesnikov.mooddiary.R.drawable.more_than)
         }
         super.setChecked(t)
     }

@@ -1,6 +1,8 @@
 package com.yurakolesnikov.mooddiary.di
 
 import android.content.Context
+import android.content.SharedPreferences
+import android.content.res.Resources
 import androidx.room.Room
 import com.yurakolesnikov.mooddiary.database.NotesDatabase
 import dagger.Module
@@ -12,7 +14,6 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-
 object AppModule {
 
     @Singleton
@@ -26,5 +27,21 @@ object AppModule {
     @Singleton
     @Provides
     fun provideDao (database: NotesDatabase) = database.getDao()
+
+    @Singleton
+    @Provides
+    fun providesSharedPreferences (
+        @ApplicationContext context: Context
+    ) = context.getSharedPreferences("Settings", Context.MODE_PRIVATE)
+
+    @Singleton
+    @Provides
+    fun providesEditor (sp: SharedPreferences) = sp.edit()
+
+    @Singleton
+    @Provides
+    fun provideResources (
+        @ApplicationContext context: Context
+    ): Resources = context.resources
 
 }

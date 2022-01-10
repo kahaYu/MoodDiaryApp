@@ -7,11 +7,10 @@ import com.yurakolesnikov.mooddiary.ui.PageFragment
 
 class ViewPagerAdapter(
     private val owner: MainActivity,
-    var pages: MutableList<PageFragment>
+    private var pages: MutableList<PageFragment>
 ) : FragmentStateAdapter(owner) {
 
-    var pageIds = pages.map { it.hashCode().toLong() } // Creating array of unique Ids for
-    // further check in containsItem.
+    var pageIds = pages.map { it.hashCode().toLong() } // Create array of unique ids for check in containsItem
 
     override fun getItemCount(): Int {
         return pages.size
@@ -21,8 +20,8 @@ class ViewPagerAdapter(
         return pages[position]
     }
 
-    // Next 2 func are for right displaying fragments.
-    // Without them adapter don't clear deleted fragments and try to reuse them.
+    // Next 2 fun are for right fragments displaying
+    // Without them adapter doesn't clear deleted fragments and try to reuse them
     override fun getItemId(position: Int): Long {
         return pages[position].hashCode().toLong()
     }
@@ -30,5 +29,4 @@ class ViewPagerAdapter(
     override fun containsItem(itemId: Long): Boolean {
         return pageIds.contains(itemId)
     }
-
 }

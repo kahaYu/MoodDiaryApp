@@ -1,7 +1,6 @@
 package com.yurakolesnikov.mooddiary.ui
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,6 +13,7 @@ import com.yurakolesnikov.mooddiary.R
 import com.yurakolesnikov.mooddiary.database.model.Note
 import com.yurakolesnikov.mooddiary.databinding.FragmentPageBinding
 import com.yurakolesnikov.mooddiary.databinding.ItemViewBinding
+import com.yurakolesnikov.mooddiary.ui.mainActivity.MainActivity
 import com.yurakolesnikov.mooddiary.ui.mainActivity.MainActivityViewModel
 import com.yurakolesnikov.mooddiary.utils.AutoClearedValue
 import dagger.hilt.android.AndroidEntryPoint
@@ -25,8 +25,6 @@ class PageFragment(private val notesToBeInflated: List<Note>) : Fragment() {
 
     private val vm: MainActivityViewModel by activityViewModels()
 
-    private lateinit var notesNoLiveData: List<Note>
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -34,89 +32,52 @@ class PageFragment(private val notesToBeInflated: List<Note>) : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentPageBinding.inflate(layoutInflater, null, false)
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        inflateNotes(notesToBeInflated)
+        inflateNotes(notesToBeInflated) // Populate notes here with respect of lifecycle
 
     }
 
     override fun onResume() {
         super.onResume()
-        vm.currentPage = vm.pages.indexOf(this)
+        vm.currentPage = vm.pages.indexOf(this) // Track of current page to pass to view pager to navigate properly
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
     fun inflateNote(note: Note) {
 
-        val view = LayoutInflater.from(requireContext()).inflate(
+        val view = LayoutInflater.from(requireContext()).inflate( // Obtain one item view
             R.layout.item_view,
             null, false
         )
 
-        val viewBinding = ItemViewBinding.bind(view)
-        viewBinding.fragment = this
-        viewBinding.note = note
-        viewBinding.mood = note.mood
-        viewBinding.itemViewBinding = viewBinding
-        viewBinding.fragment = this
+        val itemviewBinding = ItemViewBinding.bind(view) // Obtain binding object of this item view
+        itemviewBinding.fragment = this
+        itemviewBinding.note = note
 
+        val image: Drawable = vm.selectImage(note.mood) // Select image depending on mood
 
-        val image: Drawable = when {
-            note.mood <= 3 -> resources.getDrawable(R.drawable.emoji_1_3)
-            note.mood <= 6 -> resources.getDrawable(R.drawable.emoji_4_6)
-            note.mood <= 9 -> resources.getDrawable(R.drawable.emoji_7_9)
-            else -> resources.getDrawable(R.drawable.emoji_10)
-        }
-        viewBinding.apply {
+        itemviewBinding.apply {
             tvMoodRating.text = note.mood.toString()
             tvCurrentDate.text = note.date
             imageView.setImageDrawable(image)
         }
 
-        if (binding.item1.childCount == 0) {
-            binding.item1.addView(view)
-        }
-            else if (binding.item2.childCount == 0) {
-            binding.item2.addView(view)
-                } else if (binding.item3.childCount == 0) {
-            binding.item3.addView(view)
-                } else if (binding.item4.childCount == 0) {
-            binding.item4.addView(view)
-                } else if (binding.item5.childCount == 0) {
-            binding.item5.addView(view)
-                } else if (binding.item6.childCount == 0) {
-            binding.item6.addView(view)
-                }
-        else {
-            vm.createPageTrigger.value = note // Create new page when current is full.
-        }
+        attachItemViewToContainer(binding, view, note)
+
     }
 
-    fun updateNote(itemViewBinding: ItemViewBinding, mood: Int) {
-        val image: Drawable = when {
-            mood <= 3 -> resources.getDrawable(R.drawable.emoji_1_3)
-            mood <= 6 -> resources.getDrawable(R.drawable.emoji_4_6)
-            mood <= 9 -> resources.getDrawable(R.drawable.emoji_7_9)
-            else -> resources.getDrawable(R.drawable.emoji_10)
-        }
-        itemViewBinding.apply {
-            tvMoodRating.text = mood.toString()
-            imageView.setImageDrawable(image)
-        }
-    }
-
-    fun onItemClick(note: Note, mood: Int, viewBinding: ViewDataBinding, page: PageFragment) {
+    fun onItemClick(note: Note) { // Open updating dialog
         AddNoteFragment("Change your mood", note)
-            .show(parentFragmentManager, "456")
-        vm.itemViewBinding = viewBinding as ItemViewBinding?
-        vm.pageFromWhereTapped = vm.pages.indexOf(page)
+            .show(parentFragmentManager, "AddNoteFragment")
     }
 
-    fun removeAllNotes () {
+    fun removeAllNotes() { // Clear page from all views
         binding.item1.removeAllViews()
         binding.item2.removeAllViews()
         binding.item3.removeAllViews()
@@ -127,12 +88,24 @@ class PageFragment(private val notesToBeInflated: List<Note>) : Fragment() {
 
     fun inflateNotes(notesToBeInflated: List<Note>) {
         for (note in notesToBeInflated) {
-            inflateNote(note) // Inflating notes needed.
+            inflateNote(note) // Inflating note needed
         }
     }
 
-    companion object {
-        var allNotes: List<Note>? = null
+    private fun attachItemViewToContainer(binding: FragmentPageBinding, view: View, note: Note) {
+
+        when { // Check every container for emptiness. If empty - add view there
+            binding.item1.childCount == 0 -> binding.item1.addView(view)
+            binding.item2.childCount == 0 -> binding.item2.addView(view)
+            binding.item3.childCount == 0 -> binding.item3.addView(view)
+            binding.item4.childCount == 0 -> binding.item4.addView(view)
+            binding.item5.childCount == 0 -> binding.item5.addView(view)
+            binding.item6.childCount == 0 -> binding.item6.addView(view)
+            else -> { // Means current page contains 6 items already
+                val note = listOf(note)
+                vm.createPage(note) // Create new page when current is full
+            }
+        }
     }
 }
 

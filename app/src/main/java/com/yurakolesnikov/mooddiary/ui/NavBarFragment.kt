@@ -53,6 +53,7 @@ class NavBarFragment : Fragment() {
                 lastNote = notes.last()
             } else lastNote = Note("00.00.0000", 1)
         })
+
     }
 
     fun onAddPressed () {
