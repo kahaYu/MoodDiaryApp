@@ -42,10 +42,9 @@ class NavBarFragment : Fragment() {
 
     fun onAddPressed() {
         val currentDate = getCurrentDateTime().toString("dd.MM.yyyy")
-        val lastDate = if (vm.notesNoLd.isEmpty())
-        if (vm.notesNoLd.isEmpty())
-        if (vm.notesNoLd.last().date != currentDate || vm.isAlwaysYes) { // Show add dialog if now is new day or user
-            AddNoteFragment().show(parentFragmentManager, "AddNoteFragment") // chose remember always YES
+        val lastDate = if (vm.notesNoLd.isEmpty()) "00.00.0000" else vm.notesNoLd.last().date
+        if (lastDate != currentDate || vm.isAlwaysYes) { // Show add dialog if now is new day or user
+            AddNoteFragment().show(parentFragmentManager, "AddNoteFragment") // Choose remember always YES
         } else if (vm.notesNoLd.last().date == currentDate && vm.isAlwaysNo) {
             Toast.makeText(requireContext(), "Try again tomorrow", Toast.LENGTH_SHORT).show()
         } else

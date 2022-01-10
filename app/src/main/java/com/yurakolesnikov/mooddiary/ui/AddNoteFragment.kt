@@ -33,8 +33,6 @@ class AddNoteFragment(
 
     private val vm: MainActivityViewModel by activityViewModels() // Obtain the same view model like in activity
 
-    private val activity = requireActivity() as MainActivity
-
     private val mood: Int get() = binding.autoCompleteTextView.text.toString().toInt() // Always up to date mood
 
     override fun onCreateView(
@@ -70,12 +68,15 @@ class AddNoteFragment(
 
         var image: Drawable = resources.getDrawable(R.drawable.emoji_1_3) // Default image when its adding dialog
 
-        if (note == null) binding.autoCompleteTextView.setText("1", false) // Default drop-down number is 1
+        if (note == null) // Means it's adding dialog
+            binding.autoCompleteTextView
+                .setText("1", false)
+                .also { vm.previewImage.value = image } // Default drop-down number is 1 and crying image
         else { // Means it's updating dialog. Have to pull data from clicked note
             binding.autoCompleteTextView
                 .setText(note.mood.toString(), false) // Set number of drop-down to mood of clicked note
 
-            image = activity.selectImage(note.mood) // Set mini-image depending on mood of clicked note
+            image = vm.selectImage(note.mood) // Set mini-image depending on mood of clicked note
         }
 
         binding.autoCompleteTextView.addTextChangedListener(object : TextWatcher { // Update mini-image real-time
@@ -84,7 +85,7 @@ class AddNoteFragment(
             @SuppressLint("UseCompatLoadingForDrawables")
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 vm.previewImage.value =
-                    activity.selectImage(p0.toString().toInt()) // Fire live data to update mini-image in XML
+                    vm.selectImage(p0.toString().toInt()) // Fire live data to update mini-image in XML
             }
 
             override fun afterTextChanged(p0: Editable?) {}

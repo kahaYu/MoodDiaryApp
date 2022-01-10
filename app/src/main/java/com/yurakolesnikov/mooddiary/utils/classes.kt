@@ -38,11 +38,11 @@ class AutoClearedValue<T : Any>(val fragment: Fragment) : ReadWriteProperty<Frag
     }
 }
 
-object Notes {
-    var notes: MutableList<Note>? = null
+object Notes { // Object processes filtering and sorting of data
+    var notes: List<Note>? = null
         set(value) {
             field = value
-            filteredSortedNotes = value
+            filteredSortedNotes = value // Just for naming
         }
     var filteredSortedNotes = notes
     var sortOrder = SortOrder.ASC
@@ -56,24 +56,20 @@ object Notes {
             when (filterOrder) {
                 FilterOrder.MORE ->
                     filteredSortedNotes =
-                        filteredSortedNotes?.filter { note -> note.mood >= threshold } as
-                                MutableList<Note>?
+                        filteredSortedNotes?.filter { note -> note.mood >= threshold }
                 FilterOrder.LESS ->
                     filteredSortedNotes =
-                        filteredSortedNotes?.filter { note -> note.mood <= threshold } as
-                                MutableList<Note>?
+                        filteredSortedNotes?.filter { note -> note.mood <= threshold }
             }
         }
 
         if (sortChecked) {
             when (sortOrder) {
-                SortOrder.ASC ->
-                    filteredSortedNotes = filteredSortedNotes?.sortedBy { note -> note.mood } as
-                            MutableList<Note>?
+                SortOrder.ASC -> // Source data is already filtered
+                    filteredSortedNotes = filteredSortedNotes?.sortedBy { note -> note.mood }
                 SortOrder.DSC ->
                     filteredSortedNotes =
-                        filteredSortedNotes?.sortedByDescending { note -> note.mood } as
-                                MutableList<Note>?
+                        filteredSortedNotes?.sortedByDescending { note -> note.mood }
             }
         }
     }

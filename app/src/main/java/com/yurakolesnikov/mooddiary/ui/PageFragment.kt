@@ -25,8 +25,6 @@ class PageFragment(private val notesToBeInflated: List<Note>) : Fragment() {
 
     private val vm: MainActivityViewModel by activityViewModels()
 
-    private val activity = requireActivity() as MainActivity
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -45,6 +43,11 @@ class PageFragment(private val notesToBeInflated: List<Note>) : Fragment() {
 
     }
 
+    override fun onResume() {
+        super.onResume()
+        vm.currentPage = vm.pages.indexOf(this) // Track of current page to pass to view pager to navigate properly
+    }
+
     @SuppressLint("UseCompatLoadingForDrawables")
     fun inflateNote(note: Note) {
 
@@ -57,7 +60,7 @@ class PageFragment(private val notesToBeInflated: List<Note>) : Fragment() {
         itemviewBinding.fragment = this
         itemviewBinding.note = note
 
-        val image: Drawable = activity.selectImage(note.mood) // Select image depending on mood
+        val image: Drawable = vm.selectImage(note.mood) // Select image depending on mood
 
         itemviewBinding.apply {
             tvMoodRating.text = note.mood.toString()

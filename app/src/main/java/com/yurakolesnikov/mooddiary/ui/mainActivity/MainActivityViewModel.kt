@@ -1,8 +1,10 @@
 package com.yurakolesnikov.mooddiary.ui.mainActivity
 
+import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.res.Resources
 import android.graphics.drawable.Drawable
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.lifecycle.*
@@ -26,7 +28,8 @@ import javax.inject.Inject
 class MainActivityViewModel @Inject constructor(
     private val dao: Dao,
     private val sp: SharedPreferences,
-    val spEditor: SharedPreferences.Editor
+    val spEditor: SharedPreferences.Editor,
+    private val resources: Resources
 ) : ViewModel() {
 
     var firstLaunch = true // Indicates if app's just been launched
@@ -34,7 +37,7 @@ class MainActivityViewModel @Inject constructor(
     var isAlwaysYes = sp.getBoolean("isAlwaysYes", false) // Settings of confirmation dialog
     var isAlwaysNo = sp.getBoolean("isAlwaysNo", false)
     var dontAskAgainChecked = false // Checkbox to remember chosen option
-    
+
     private var sortOrderLd = MutableLiveData<Int>()
     var sortOrder = SortOrder.ASC // Default state of sorting order
     var sortCheckedLd = MutableLiveData<Boolean>(false) // Not private cause is called from XML
@@ -50,17 +53,21 @@ class MainActivityViewModel @Inject constructor(
 
     val pages = mutableListOf<PageFragment>() // Default empty list of pages for viewPager
 
+    var currentPage: Int = 0 // To track current page to keep right position of view pager
+
     var notesNoLd = mutableListOf<Note>() // Property to keep list of all notes after each change
 
     var previewImage = MutableLiveData<Drawable>() // Mini-image to show in add note dialog. Observed in XML
 
     private val eventChannel = Channel<Event>()
     val event = eventChannel.receiveAsFlow()
+
     sealed class Event { // Kinds of single-life events for ui
         data class ShowUndoDeletionSnackbar(val note: Note) : Event()
         object SyncPagesId : Event()
         object SetLastPage : Event()
         object ShowToastNotesLimit : Event()
+        object SetCurrentPage : Event()
     }
 
     val allNotesSortedFiltered = object : MediatorLiveData<List<Note>>() { // Notes for ui
@@ -224,7 +231,8 @@ class MainActivityViewModel @Inject constructor(
                     }
                     viewModelScope.launch {
                         eventChannel.send(Event.SyncPagesId)
-                        eventChannel.send(Event.SetLastPage)
+                        if (pages.lastIndex >= currentPage) eventChannel.send(Event.SetCurrentPage)
+                        else eventChannel.send(Event.SetLastPage)
                     }
                 }
             }
@@ -265,5 +273,14 @@ class MainActivityViewModel @Inject constructor(
         filterCheckedLd.value = !filterChecked
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
+    fun selectImage(mood: Int): Drawable { // Pick the picture based on mood
+        return when {
+            mood <= 3 -> resources.getDrawable(R.drawable.emoji_1_3)
+            mood <= 6 -> resources.getDrawable(R.drawable.emoji_4_6)
+            mood <= 9 -> resources.getDrawable(R.drawable.emoji_7_9)
+            else -> resources.getDrawable(R.drawable.emoji_10)
+        }
+    }
 }
 

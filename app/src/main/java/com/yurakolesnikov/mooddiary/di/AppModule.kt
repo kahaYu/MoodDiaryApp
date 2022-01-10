@@ -2,6 +2,7 @@ package com.yurakolesnikov.mooddiary.di
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.res.Resources
 import androidx.room.Room
 import com.yurakolesnikov.mooddiary.database.NotesDatabase
 import dagger.Module
@@ -36,5 +37,11 @@ object AppModule {
     @Singleton
     @Provides
     fun providesEditor (sp: SharedPreferences) = sp.edit()
+
+    @Singleton
+    @Provides
+    fun provideResources (
+        @ApplicationContext context: Context
+    ): Resources = context.resources
 
 }

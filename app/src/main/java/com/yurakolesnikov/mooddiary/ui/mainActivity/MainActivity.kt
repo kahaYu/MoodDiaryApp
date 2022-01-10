@@ -70,6 +70,9 @@ class MainActivity : AppCompatActivity() {
                     is MainActivityViewModel.Event.SetLastPage -> {
                         viewPager.setCurrentItem(vm.pages.lastIndex, true)
                     }
+                    is MainActivityViewModel.Event.SetCurrentPage -> {
+                        viewPager.setCurrentItem(vm.currentPage)
+                    }
                     is MainActivityViewModel.Event.ShowToastNotesLimit -> {
                         Toast.makeText(
                             applicationContext, "Notes limit is exceed. First 6 notes are " +
@@ -94,15 +97,6 @@ class MainActivity : AppCompatActivity() {
     fun syncPagesId() {
         viewPagerAdapter.pageIds = vm.pages.map { it.hashCode().toLong() } // Sync fragments ids for proper adapter work
         viewPagerAdapter.notifyDataSetChanged()
-    }
-
-    fun selectImage(mood: Int): Drawable { // Can't move it to view model as resources require context
-        return when {
-            mood <= 3 -> resources.getDrawable(R.drawable.emoji_1_3)
-            mood <= 6 -> resources.getDrawable(R.drawable.emoji_4_6)
-            mood <= 9 -> resources.getDrawable(R.drawable.emoji_7_9)
-            else -> resources.getDrawable(R.drawable.emoji_10)
-        }
     }
 
     fun showUndoSnackbar(view: View, event: MainActivityViewModel.Event.ShowUndoDeletionSnackbar) {
