@@ -94,12 +94,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun syncPagesId() {
+    private fun syncPagesId() {
         viewPagerAdapter.pageIds = vm.pages.map { it.hashCode().toLong() } // Sync fragments ids for proper adapter work
         viewPagerAdapter.notifyDataSetChanged()
     }
 
-    fun showUndoSnackbar(view: View, event: MainActivityViewModel.Event.ShowUndoDeletionSnackbar) {
+    private fun showUndoSnackbar(view: View, event: MainActivityViewModel.Event.ShowUndoDeletionSnackbar) {
         Snackbar.make(view, "Note deleted", Snackbar.LENGTH_LONG)
             .setAction("Undo", OnClickListener(event))
             .show()

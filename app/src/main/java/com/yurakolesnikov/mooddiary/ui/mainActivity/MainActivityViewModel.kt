@@ -13,6 +13,7 @@ import com.yurakolesnikov.mooddiary.database.Dao
 import com.yurakolesnikov.mooddiary.database.model.Note
 import com.yurakolesnikov.mooddiary.databinding.ItemViewBinding
 import com.yurakolesnikov.mooddiary.ui.PageFragment
+import com.yurakolesnikov.mooddiary.ui.SortFragment
 import com.yurakolesnikov.mooddiary.utils.FilterOrder
 import com.yurakolesnikov.mooddiary.utils.Notes
 import com.yurakolesnikov.mooddiary.utils.SortOrder
