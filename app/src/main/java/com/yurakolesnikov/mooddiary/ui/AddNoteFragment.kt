@@ -95,8 +95,7 @@ class AddNoteFragment(
     fun onApplyPressed() {
         val currentDate = getCurrentDateTime().toString("dd.MM.yyyy")
         if (note == null) { // Means its adding dialog
-            val newNote = Note(currentDate, mood, MainActivity.NOTE_ID)
-            MainActivity.NOTE_ID++
+            val newNote = Note(currentDate, mood)
             vm.insertNote(newNote) // Add note to database
         } else { // Means its updating dialog
             note.mood = mood

@@ -111,10 +111,6 @@ class MainActivity : AppCompatActivity() {
             vm.undoDeleteNote(event.note)
         }
     }
-
-    companion object {
-        var NOTE_ID = 0
-    }
 }
 
 

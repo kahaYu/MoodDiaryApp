@@ -166,7 +166,6 @@ class MainActivityViewModel @Inject constructor(
 
     fun prepopulate(notes: List<Note>) { // Recover previous state of ui
         val numberOfPagesNeeded = (notes.size.toDouble() / 6).roundToNextInt() // How many pages are needed
-        if (notes.isNotEmpty()) MainActivity.NOTE_ID = notesNoLd.last().id + 1 // New note will receive next id
         if (numberOfPagesNeeded > 0) { // If pages needed are 0, no need to create pages
             val notesToBeInflatedChunked = notes.chunked(6) // Divide notes by 6 items parts
             for (page in 1..numberOfPagesNeeded) {
