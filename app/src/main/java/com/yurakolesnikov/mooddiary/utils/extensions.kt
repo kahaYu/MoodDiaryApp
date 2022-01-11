@@ -10,7 +10,7 @@ import com.yurakolesnikov.mooddiary.databinding.FragmentNavBarBinding
 import java.text.SimpleDateFormat
 import java.util.*
 
-// Rounds double to next integer.
+// Rounds double to next integer
 fun Double.roundToNextInt(): Int {
     when {
         this == 0.0 -> return 0
