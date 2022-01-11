@@ -33,7 +33,7 @@ class NavBarFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        removeBackground(binding) // Remove bg here, cause if to set transparent color in XML, shadow remains.
+        removeBackground(binding) // Remove bg here, cause if to set transparent color in XML, shadow remains
 
         binding.fragment = this
         binding.lifecycleOwner = this
