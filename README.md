@@ -35,7 +35,7 @@ To round corners I removed standard background and put own XML-drawable.<br>
 To achieve this I:
 1. Observe changes in drop-down list;
 2. Send new value to viewmodel's function that calculates proper image, based on the value;
-3. Fire livedata with new value;
+3. Fire livedata with new image;
 4. Observe livedata property of viewmodel in XML with help of **DataBinding**.<br>
 
 <img src="https://user-images.githubusercontent.com/79222385/149166814-26032f3b-9219-47d3-a6c0-117208f4a3a9.jpg" width="360" height="640">
