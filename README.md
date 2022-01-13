@@ -94,3 +94,14 @@ If you tap Add-fab secondly in one day, you face confirmation dialog.
 App remembers your choose with help of SharedPreferences.
 
 <img src="https://user-images.githubusercontent.com/79222385/149340218-13127e2a-415e-4b71-b988-e3a06f9d3ca5.jpg" width="230" height="409"> <img src="https://user-images.githubusercontent.com/79222385/149340242-5c85b2ae-25b2-4a0b-ba71-078c5fb738e1.jpg" width="230" height="409"> <img src="https://user-images.githubusercontent.com/79222385/149340256-00007c2d-f147-45ee-b7d7-2e78f9549f7d.jpg" width="230" height="409">
+
+## Most challenging issues I had:
+
+1. ViewPager is responsible for managing pages. **But who is responsible for managing views on these pages?** *- Right! Nobody.*
+Issue was to inflate, delete, update views according to the same operations in database. 
+RecyclerView does this all for you. It's enought to feed the adapter with updated data and it will populate screen accordingly.
+But in ViewPager I have to rule it by myself. It's kinda I wrote my own adapter. 
+
+2. To force filter and sort work independently. 
+First what I tried was ...
+
