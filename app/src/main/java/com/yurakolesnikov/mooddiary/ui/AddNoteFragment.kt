@@ -77,6 +77,7 @@ class AddNoteFragment(
                 .setText(note.mood.toString(), false) // Set number of drop-down to mood of clicked note
 
             image = vm.selectImage(note.mood) // Set mini-image depending on mood of clicked note
+            vm.previewImage.value = image
         }
 
         binding.autoCompleteTextView.addTextChangedListener(object : TextWatcher { // Update mini-image real-time
