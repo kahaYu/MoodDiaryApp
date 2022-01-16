@@ -23,6 +23,7 @@ And of course, complications I faced on my way. :dizzy_face:
 ## What it does?
 
 **:one: When you launch the App, dao queries SQL-table and activity prepopulates viewpager with last data, stored in database.**
+Bottom Navigation Bar is a fragment. I can customize it more detailed than BottomMenu view.
 
 <img src="https://user-images.githubusercontent.com/79222385/149162936-bc58d29b-7670-4930-b994-c55a9b3e69a0.jpg" width="360" height="640">
 
