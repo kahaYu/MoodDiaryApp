@@ -23,6 +23,7 @@ And of course, complications I faced on my way. :dizzy_face:
 ## What it does?
 
 **:one: When you launch the App, dao queries SQL-table and activity prepopulates viewpager with last data, stored in database.**
+Bottom Navigation Bar is a fragment. I can customize it more detailed than all kinds of bottom menu views.
 
 <img src="https://user-images.githubusercontent.com/79222385/149162936-bc58d29b-7670-4930-b994-c55a9b3e69a0.jpg" width="360" height="640">
 
@@ -94,3 +95,22 @@ If you tap Add-fab secondly in one day, you face confirmation dialog.
 App remembers your choose with help of SharedPreferences.
 
 <img src="https://user-images.githubusercontent.com/79222385/149340218-13127e2a-415e-4b71-b988-e3a06f9d3ca5.jpg" width="230" height="409"> <img src="https://user-images.githubusercontent.com/79222385/149340242-5c85b2ae-25b2-4a0b-ba71-078c5fb738e1.jpg" width="230" height="409"> <img src="https://user-images.githubusercontent.com/79222385/149340256-00007c2d-f147-45ee-b7d7-2e78f9549f7d.jpg" width="230" height="409">
+
+## Most challenging issues I had:
+
+1. ViewPager is responsible for managing pages. **But who is responsible for managing views on these pages?** <br>
+*- Right! Nobody.* :satisfied: <br>
+&nbsp;&nbsp;&nbsp;&nbsp;Issue was to inflate, delete, update views according to the same operations in database. <br>
+:muscle:RecyclerView does this all for you. It's enought to feed the adapter with updated data and it will populate screen accordingly.<br>
+But in ViewPager I have to rule it by myself. It's kinda I wrote my own adapter. :white_check_mark: 
+
+2. To force filter and sort **work independently**. <br>
+&nbsp;&nbsp;&nbsp;&nbsp;First what I tried was to get all notes in MainActivity from single LiveData. And after it to make filtration and sorting in MainActivity. Bad practice, :grimacing: but I wanted to realise it and feel all disadvantages by myself. <br>
+After hours of trying I almost set it properly. But still, there were no full independence. And I can't reach it. <br>
+&nbsp;&nbsp;&nbsp;&nbsp;I started **to dig deeper** and learned about **dynamic SQL-quieries**. Dao's function receives paramentres of filtration and sorting and return prepared list of notes to transfer to MainActivity. To my big regret, my query didn't want to work.:weary: After 2 days of trying I found somewhere, that it's overkill to delegate processing of the list to SQL. They say it's beter to do by yourself in the code. Were they right? :pray: <br>
+&nbsp;&nbsp;&nbsp;&nbsp;I made a decision to do so. But I couldn't figure out how to update list of notes **every time some parameter is changed**. I saw lessons only using Flow's operator *.combine{}*. But I don't wanna use Flows in this App. Purpose was to learn the LiveData. Digging in, universe sent me an angel, even presented me a life - **MediatorLIFEData** :stuck_out_tongue_winking_eye: <br>
+With help of it I easy combined 6 sources of data and update list every time any data is changed. MainActivity receives **only notes for displaying**. It corresponds with the purpose of MVVM - to devide layers, to leave as little operations in UI-layer as possible. 
+
+### Thank you for attention! :raised_hands:
+:sparkles: Wish you having a built in filter to see only good things in life, which are from 9 and bigger according to the App's scale!
+
